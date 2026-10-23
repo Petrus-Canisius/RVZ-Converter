@@ -2,6 +2,17 @@
 
 RVZ Converter is a desktop application created by **Petrus-Canisius**. It converts Wii and GameCube disc images through DolphinTool and Wiimms ISO Tools (WIT). Both engines must be installed separately. They are not bundled.
 
+## Downloads
+
+| Operating system | Architecture | Download |
+| --- | --- | --- |
+| Windows | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-x64.zip) |
+| Windows | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-arm64.zip) |
+| Linux | x64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
+| Linux | ARM64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
+| macOS | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
+| macOS | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
+
 ## Implemented conversion matrix
 
 | Input | ISO | RVZ | CISO | WBFS (Wii only) |
@@ -19,6 +30,6 @@ Same-format conversion is not supported. WBFS output is restricted to Wii discs.
 
 ## Validation and limitations
 
-Native builds, regression tests, UI smoke tests and package creation passed in GitHub Actions on all six target architectures. Engine checks are not run by CI. On Windows x64, synthetic-image engine tests covered ISO to RVZ to ISO, ISO/RVZ to CISO, and GCZ/WIA to RVZ. These tests do not verify real discs. Real-image conversion remains **NOT TESTED**. Other implemented routes, including WBFS conversions, have not been verified with real disc images.
+The conversion matrix lists implemented routes. CI checks do not establish that every downloadable package or conversion route works in every environment. See [technical validation records](docs/VALIDATION.md) for the exact test scope and results.
 
 macOS packages are unsigned and not notarized. See [README.md](README.md), [platform limitations](docs/PLATFORMS.md), and [third-party notices and licenses](THIRD-PARTY-NOTICES.md).
