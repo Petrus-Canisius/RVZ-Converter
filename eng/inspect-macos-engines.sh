@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$1
+for engine in "$root/tools/dolphin/dolphin-tool" "$root/tools/wit/wit"; do
+  file "$engine"
+  lipo -info "$engine"
+  otool -L "$engine" | tee -a "$root/native-dependencies.txt"
+  if otool -L "$engine" | tail -n +2 | grep -Ev '^\s*(/usr/lib/|/System/Library/|@executable_path/|@loader_path/|@rpath/)' | grep -q .; then
+    echo 'Non-relocatable engine dependency detected.' >&2
+    exit 1
+  fi
+done

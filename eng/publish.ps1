@@ -19,15 +19,16 @@ foreach ($rid in $RuntimeIdentifier) {
         Move-Item -LiteralPath $output -Destination $backup
     }
     Move-Item -LiteralPath $staging -Destination $output
-    $packArguments = @($output, $rid, (Join-Path $ProjectRoot 'artifacts/packages'))
+    $engineRoot = Assert-ArtifactPath (Join-Path $ProjectRoot "artifacts/engines/$rid")
+    if (-not (Test-Path (Join-Path $engineRoot 'tools/engines.json'))) { throw "Build the matching engines first with eng/build-engines.ps1 -RuntimeIdentifier $rid." }
+    $launcher = 'none'
     if ($rid.StartsWith('win-')) {
         $launcher = Assert-ArtifactPath (Join-Path $ProjectRoot "artifacts/publish/launchers/$rid/RVZConverter.exe")
         & (Join-Path $PSScriptRoot 'build-windows-launcher.ps1') -RuntimeIdentifier $rid -OutputPath $launcher -CompilerDirectory $LauncherCompilerDirectory
-        $packArguments += $launcher
     }
+    $packArguments = @($output, $rid, (Join-Path $ProjectRoot 'artifacts/packages'), $launcher, $engineRoot)
     $packCommand = @('run', '--project', (Join-Path $PSScriptRoot 'pack/RvzConverter.Pack.csproj'), '-c', 'Release', '--')
     $packCommand += $packArguments
     Invoke-CheckedNative 'dotnet' $packCommand
-    if ($rid.StartsWith('win-')) { & (Join-Path $PSScriptRoot 'test-windows-launcher.ps1') -Archive (Join-Path $ProjectRoot "artifacts/packages/RVZConverter-$rid.zip") }
     Write-Host "Self-contained publish complete: $output. Native runtime validation is a separate check."
 }

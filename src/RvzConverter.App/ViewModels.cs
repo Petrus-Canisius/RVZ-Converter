@@ -66,7 +66,7 @@ public sealed class MainViewModel : Observable, IDisposable
         try { if (writeLog) log = new SessionLog(); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { LogText = "Cannot create the session log: " + ex.GetType().Name; }
         if (warning is not null) Write(warning);
-        Write("RVZ Converter 2.0.1. Created by Petrus-Canisius. No telemetry or automatic downloads.");
+        Write("RVZ Converter 2.1.0. Created by Petrus-Canisius. No telemetry or automatic downloads.");
         elapsedTimer.Tick += (_, _) => { if (activeItem is not null) activeItem.Elapsed = Display.Duration(activeElapsed + elapsedClock.Elapsed); };
     }
     public async Task DiscoverAsync()

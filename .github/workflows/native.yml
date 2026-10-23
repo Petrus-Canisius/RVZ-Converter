@@ -13,6 +13,7 @@ jobs:
           - { runner: macos-15-intel, rid: osx-x64, architecture: X64 }
           - { runner: macos-15, rid: osx-arm64, architecture: Arm64 }
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -28,7 +29,10 @@ jobs:
           if ([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString() -ne '${{ matrix.architecture }}') { throw 'Native architecture mismatch; emulation is not a native test.' }
       - name: Install Linux display dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libice6 libsm6 libfontconfig1
+        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libice6 libsm6 libfontconfig1 ninja-build cmake pkg-config libudev-dev libncurses-dev zlib1g-dev libssl-dev gawk
+      - name: Install macOS build dependencies
+        if: runner.os == 'macOS'
+        run: brew install ninja pkg-config gawk
       - name: Build and regression tests
         shell: pwsh
         run: |
@@ -43,13 +47,31 @@ jobs:
         run: ./eng/test.ps1 -Visual
       - name: Publish native package
         shell: pwsh
-        run: ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks
-      - name: Engine test status
+        run: |
+          ./eng/build-engines.ps1 -RuntimeIdentifier '${{ matrix.rid }}'
+          ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks
+      - name: Extracted package integration (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pwsh -File eng/test-package.ps1 -RuntimeIdentifier '${{ matrix.rid }}'
+      - name: Extracted package integration (Windows/macOS)
+        if: runner.os != 'Linux'
         shell: pwsh
-        run: Write-Host 'Conversion engines are not provisioned by CI. Engine integration and real conversions NOT RUN.'
+        run: ./eng/test-package.ps1 -RuntimeIdentifier '${{ matrix.rid }}'
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.rid }}-unsigned
           path: |
             artifacts/packages/*
+            artifacts/sources/EngineSources-*.tar.gz
+            artifacts/engines/*/*dependencies.txt
+            artifacts/package-check-*/engine-integration.txt
+            artifacts/package-check-*/native UI/*
             artifacts/visual-avalonia/*
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}-failure
+          path: |
+            artifacts/package-check-*/engine-integration.txt
+            artifacts/engine-build/**/CMakeFiles/CMakeConfigureLog.yaml

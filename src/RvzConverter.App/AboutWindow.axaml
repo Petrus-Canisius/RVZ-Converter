@@ -2,9 +2,9 @@
   <Grid Margin="16" RowDefinitions="*,Auto" RowSpacing="12">
     <ScrollViewer><StackPanel Spacing="10">
       <TextBlock Text="RVZ Converter" FontSize="19" FontWeight="Bold" />
-      <TextBlock Text="Version 2.0.1" />
+      <TextBlock Text="Version 2.1.0" />
       <TextBlock Text="Application created by Petrus-Canisius." />
-      <TextBlock Text="Conversion engines are separate projects. DolphinTool is part of Dolphin Emulator, by the Dolphin Emulator project contributors (GPL-2.0-or-later). Wiimms ISO Tools is by Wiimm and contributors (GPL-2.0-or-later). Neither engine is authored by Petrus-Canisius or bundled with this application." TextWrapping="Wrap" />
+      <TextBlock Text="DolphinTool 2506 is part of Dolphin Emulator, by the Dolphin Emulator project contributors (GPL-2.0-or-later). WIT 3.05a is by Wiimm and contributors (GPL-2.0-or-later). Native engines are included where available. Windows ARM64 includes DolphinTool only. Engine licenses and source information are included in the package. Neither engine is authored by Petrus-Canisius." TextWrapping="Wrap" />
       <TextBlock Text="Interface: Avalonia (MIT). Runtime: Microsoft .NET. See the third-party notices and licenses distributed with this application." TextWrapping="Wrap" />
       <TextBlock Text="Container validation checks readability, not complete disc integrity. Removed or scrubbed data cannot be reconstructed. No telemetry or automatic downloads." TextWrapping="Wrap" />
       <TextBlock Text="Created by Petrus-Canisius" />
