@@ -1,7 +1,24 @@
 # RVZ Converter 2.0.0-rc.1
 
-This prerelease adds a shared Avalonia desktop application for Windows, Linux and macOS. It supports data-based inspection for ISO, RVZ, GCZ, WIA, CISO and WBFS inputs, with ISO, RVZ, CISO and WBFS outputs where installed engines support the route. The classic interface supports a conversion queue, progress reporting, logs, engine discovery and cancellation.
+RVZ Converter is a desktop application created by **Petrus-Canisius**. It converts Wii and GameCube disc images through DolphinTool and Wiimms ISO Tools (WIT). Both engines must be installed separately. They are not bundled.
 
-The application was built for all six target architectures. Windows x64 was launched and visually checked. Other targets were cross-published. Their native launch and engine checks were not run. The regression suite passed 74/74 tests, including synthetic-image engine tests on Windows x64. Real-image conversion remains **NOT TESTED**. macOS packages are unsigned and not notarized.
+## Implemented conversion matrix
 
-DolphinTool and WIT must be installed separately. They are not bundled. See [README.md](README.md) and [third-party notices](THIRD-PARTY-NOTICES.md).
+| Input | ISO | RVZ | CISO | WBFS (Wii only) |
+| --- | --- | --- | --- | --- |
+| ISO | Same format | DolphinTool | WIT | WIT |
+| RVZ | DolphinTool | Same format | DolphinTool → ISO → WIT | DolphinTool → ISO → WIT |
+| GCZ | DolphinTool or WIT fallback | DolphinTool | WIT | WIT |
+| WIA | DolphinTool or WIT fallback | DolphinTool | WIT | WIT |
+| CISO | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | Not supported | WIT |
+| WBFS | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | WIT | Not supported |
+
+Routes depend on installed engine checks and image readability. If DolphinTool cannot read a source that WIT can read, WIT can create an intermediate ISO. RVZ output still requires DolphinTool. RVZ input to CISO or WBFS requires DolphinTool to create an intermediate ISO before WIT writes the final format. These intermediates and destination staging require extra disk space.
+
+Same-format conversion is not supported. WBFS output is restricted to Wii discs. CISO means the Wii/GameCube format, not PSP CSO. Missing data already removed from a scrubbed, modified or incomplete source cannot be restored. CISO and WBFS output is not promised to be bit-for-bit identical.
+
+## Validation and limitations
+
+Native builds, regression tests, UI smoke tests and package creation passed in GitHub Actions on all six target architectures. Engine checks are not run by CI. On Windows x64, synthetic-image engine tests covered ISO to RVZ to ISO, ISO/RVZ to CISO, and GCZ/WIA to RVZ. These tests do not verify real discs. Real-image conversion remains **NOT TESTED**. Other implemented routes, including WBFS conversions, have not been verified with real disc images.
+
+macOS packages are unsigned and not notarized. See [README.md](README.md), [platform limitations](docs/PLATFORMS.md), and [third-party notices and licenses](THIRD-PARTY-NOTICES.md).
