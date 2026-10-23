@@ -11,8 +11,8 @@ $outputDirectory = Split-Path -Parent $output
 [IO.Directory]::CreateDirectory($outputDirectory) | Out-Null
 $resource = Join-Path $outputDirectory 'RvzConverterLauncher.res'
 $object = Join-Path $outputDirectory 'RvzConverterLauncher.obj'
-$isWindows = [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)
-$compiler = if ($isWindows) { Get-Command cl.exe -ErrorAction SilentlyContinue } else { $null }
+$isWindowsHost = [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Windows)
+$compiler = if ($isWindowsHost) { Get-Command cl.exe -ErrorAction SilentlyContinue } else { $null }
 
 if ($compiler) {
     $rc = Get-Command rc.exe -ErrorAction SilentlyContinue
