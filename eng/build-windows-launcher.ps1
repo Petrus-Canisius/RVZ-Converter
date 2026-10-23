@@ -22,7 +22,8 @@ if ($compiler) {
     try {
         Invoke-CheckedNative $rc.Source @('/nologo','/fo',$resource,'eng/launcher/RvzConverterLauncher.rc')
         Invoke-CheckedNative $compiler.Source @('/nologo','/O2','/W4','/WX','/EHsc','/MT','/DUNICODE','/D_UNICODE','/DWIN32_LEAN_AND_MEAN','/c','eng/launcher/RvzConverterLauncher.cpp',"/Fo$object")
-        Invoke-CheckedNative $link.Source @('/nologo','/SUBSYSTEM:WINDOWS','/MANIFEST:NO','/OUT:' + $output,$object,$resource,'shell32.lib')
+        $linkOutputArgument = '/OUT:' + $output
+        Invoke-CheckedNative $link.Source @('/nologo','/SUBSYSTEM:WINDOWS','/MANIFEST:NO',$linkOutputArgument,$object,$resource,'shell32.lib')
     }
     finally { Pop-Location }
 }
