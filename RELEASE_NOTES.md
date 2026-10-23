@@ -1,17 +1,21 @@
-# RVZ Converter 2.0.0-rc.1
+# RVZ Converter 2.0.1
 
-RVZ Converter is a desktop application created by **Petrus-Canisius**. It converts Wii and GameCube disc images through DolphinTool and Wiimms ISO Tools (WIT). Both engines must be installed separately. They are not bundled.
+Created by **Petrus-Canisius**. DolphinTool and Wiimms ISO Tools (WIT) are independent projects. Install them separately. They are not bundled.
 
 ## Downloads
 
 | Operating system | Architecture | Download |
 | --- | --- | --- |
-| Windows | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-x64.zip) |
-| Windows | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-arm64.zip) |
-| Linux | x64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
-| Linux | ARM64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
-| macOS | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
-| macOS | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
+| Windows | x64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-x64.zip) |
+| Windows | ARM64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-arm64.zip) |
+| Linux | x64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
+| Linux | ARM64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
+| macOS | x64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
+| macOS | ARM64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
+
+The new Windows package root contains `RVZConverter.exe`, `README.txt`, `app/`, `docs/`, and `licenses/`. Extract the complete archive. Keep `app/` beside the root launcher. Windows packages include the .NET runtime. They do not require administrator privileges.
+
+The Windows launcher uses the original application icon and Petrus-Canisius metadata. It starts the application from `app/` and forwards arguments. Optional engine distributions can be placed in sibling `tools/dolphin/` and `tools/wit/` folders. You can also locate installed executables in the application. Keep engine dependencies with their executables.
 
 ## Implemented conversion matrix
 
@@ -24,12 +28,12 @@ RVZ Converter is a desktop application created by **Petrus-Canisius**. It conver
 | CISO | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | Not supported | WIT |
 | WBFS | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | WIT | Not supported |
 
-Routes depend on installed engine checks and image readability. If DolphinTool cannot read a source that WIT can read, WIT can create an intermediate ISO. RVZ output still requires DolphinTool. RVZ input to CISO or WBFS requires DolphinTool to create an intermediate ISO before WIT writes the final format. These intermediates and destination staging require extra disk space.
-
-Same-format conversion is not supported. WBFS output is restricted to Wii discs. CISO means the Wii/GameCube format, not PSP CSO. Missing data already removed from a scrubbed, modified or incomplete source cannot be restored. CISO and WBFS output is not promised to be bit-for-bit identical.
+Routes depend on engine availability and image readability. Same-format conversion is not supported. WBFS output is restricted to Wii discs. CISO means the Wii/GameCube format, not PSP CSO. Intermediate ISO files need extra disk space. Conversion cannot restore data already missing from a source image.
 
 ## Validation and limitations
 
-The conversion matrix lists implemented routes. CI checks do not establish that every downloadable package or conversion route works in every environment. See [technical validation records](docs/VALIDATION.md) for the exact test scope and results.
+The Windows x64 launcher and portable layout passed a local runtime smoke test from a different working directory with paths containing spaces and Unicode. The ARM64 package was cross-published. Check [docs/VALIDATION.md](docs/VALIDATION.md) for its native runtime status and the detailed test record.
 
-macOS packages are unsigned and not notarized. See [README.md](README.md), [platform limitations](docs/PLATFORMS.md), and [third-party notices and licenses](THIRD-PARTY-NOTICES.md).
+This packaging update does not validate every conversion route with real disc images. Real-image conversion remains unverified. Linux and macOS downloads remain version 2.0.0 packages. The macOS packages are unsigned and not notarized.
+
+See [README.md](README.md), [engine setup](docs/ENGINES.md), [platform limitations](docs/PLATFORMS.md), and [third-party notices and licenses](THIRD-PARTY-NOTICES.md). DolphinTool is part of Dolphin Emulator. WIT is by Wiimm and contributors. Neither engine is created by Petrus-Canisius.

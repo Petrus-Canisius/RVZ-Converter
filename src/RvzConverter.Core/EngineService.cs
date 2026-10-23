@@ -18,6 +18,10 @@ public static class EngineLocator
         string folder = engine == EngineKind.Dolphin ? "dolphin" : "wit";
         var candidates = new List<string>();
         var roots = new List<string> { Path.Combine(appDirectory, "tools") };
+        string fullAppDirectory = Path.TrimEndingDirectorySeparator(Path.GetFullPath(appDirectory));
+        if (Path.GetFileName(fullAppDirectory).Equals("app", StringComparison.OrdinalIgnoreCase)
+            && Directory.GetParent(fullAppDirectory) is { } packageRoot)
+            roots.Add(Path.Combine(packageRoot.FullName, "tools"));
         if (platform == DesktopPlatform.MacOS) roots.Add(Path.GetFullPath(Path.Combine(appDirectory, "..", "Resources", "tools")));
         // Development only: look for the solution marker, never arbitrary drive-wide searches.
         var ancestor = new DirectoryInfo(appDirectory);

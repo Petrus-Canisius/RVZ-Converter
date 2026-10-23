@@ -4,18 +4,18 @@ RVZ Converter is a desktop application for converting Wii and GameCube disc imag
 
 ## Downloads
 
-Release `v2.0.0-rc.1` contains application version `2.0.0`. Packages are available from the [GitHub Releases page](https://github.com/Petrus-Canisius/RVZ-Converter/releases/tag/v2.0.0-rc.1).
+Release `v2.0.1` contains the updated Windows portable packages. Linux and macOS downloads remain at version `2.0.0`. See the [GitHub Releases page](https://github.com/Petrus-Canisius/RVZ-Converter/releases/tag/v2.0.1).
 
 | Operating system | Architecture | Download |
 | --- | --- | --- |
-| Windows | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-x64.zip) |
-| Windows | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-win-arm64.zip) |
-| Linux | x64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
-| Linux | ARM64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
-| macOS | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
-| macOS | ARM64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
+| Windows | x64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-x64.zip) |
+| Windows | ARM64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-arm64.zip) |
+| Linux | x64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
+| Linux | ARM64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
+| macOS | x64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
+| macOS | ARM64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
 
-See [SHA256SUMS.txt](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/SHA256SUMS.txt) to verify downloads. Extract the whole package and keep its runtime files and notices together. Packages are self-contained and do not require a separate .NET installation.
+See the [Windows package checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/SHA256SUMS.txt) for version 2.0.1. The earlier [checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/SHA256SUMS.txt) cover Linux and macOS packages. Extract each complete package. The applications include .NET and do not need a separate .NET installation.
 
 ## Formats and use
 
@@ -58,7 +58,9 @@ Neither engine is created by Petrus-Canisius. Review [engine setup and license d
 
 Install DolphinTool and WIT separately. The application packages do not include conversion engines. Follow the [engine installation guide](docs/ENGINES.md) to install compatible native builds and their dependencies.
 
-On Windows, extract the ZIP and run `RvzConverter.exe`. On Linux, install the required system libraries, extract the tar.gz archive, and run the application executable. Linux requires glibc, X11 or XWayland, Fontconfig, and native .NET dependencies. On macOS, extract the ZIP and open the app bundle. The macOS packages are unsigned and not notarized. Gatekeeper or local security policy may block launch.
+On Windows, extract the full ZIP and open the root `RVZConverter.exe`. Keep `app/` beside the launcher. The published application runtime is under `app/`. Optional engine distributions can be placed in `tools/dolphin/` and `tools/wit/` beside the launcher. You can also locate installed engine executables in the application.
+
+On Linux, install the required system libraries, extract the tar.gz archive, and run the application executable. Linux requires glibc, X11 or XWayland, Fontconfig, and native .NET dependencies. On macOS, extract the ZIP and open the app bundle. The macOS packages are unsigned and not notarized. Gatekeeper or local security policy may block launch.
 
 The application uses system fonts with Tahoma and cross-platform fallbacks. Native dialogs and title bars follow the operating system language. See [platform requirements and limitations](docs/PLATFORMS.md) and [technical validation records](docs/VALIDATION.md). CI results do not validate every package or conversion route.
 

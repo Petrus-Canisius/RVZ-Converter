@@ -1,16 +1,17 @@
+param([switch]$WindowsOnly)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $packageDirectory = Join-Path $repoRoot 'artifacts/packages'
-$packageNames = @(
+$packageNames = if ($WindowsOnly) { @('RVZConverter-win-x64.zip','RVZConverter-win-arm64.zip') } else { @(
     'RVZConverter-win-x64.zip'
     'RVZConverter-win-arm64.zip'
     'RVZConverter-linux-x64.tar.gz'
     'RVZConverter-linux-arm64.tar.gz'
     'RVZConverter-osx-x64.zip'
     'RVZConverter-osx-arm64.zip'
-)
+) }
 
 $lines = foreach ($name in $packageNames) {
     $path = Join-Path $packageDirectory $name

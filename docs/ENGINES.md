@@ -4,7 +4,7 @@ Do not rename or extract a single executable away from its dependencies. User-le
 
 ## Discovery locations
 
-Application-local `tools/dolphin` and `tools/wit` come first, then a remembered valid path, PATH, then:
+Application-local `tools/dolphin` and `tools/wit` come first. On Windows portable packages, the application also checks `tools/dolphin` and `tools/wit` beside the root launcher. Next it checks a remembered valid path, PATH, then:
 
 - Windows: `%ProgramFiles%/Dolphin`, `%ProgramFiles%/Dolphin Emulator`, `%ProgramFiles%/Wiimms ISO Tools/bin`, and the system drive's `wit/bin`.
 - Linux: `/usr/local/bin`, `/usr/bin`, `/opt/dolphin/bin`, `/opt/wit/bin`.

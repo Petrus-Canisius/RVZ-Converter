@@ -1,4 +1,4 @@
-param([ValidateSet('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')][string[]]$RuntimeIdentifier = @('win-x64'), [ValidateSet('Debug','Release')][string]$Configuration = 'Release', [switch]$WithEngines, [switch]$SkipChecks)
+param([ValidateSet('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')][string[]]$RuntimeIdentifier = @('win-x64'), [ValidateSet('Debug','Release')][string]$Configuration = 'Release', [switch]$WithEngines, [switch]$SkipChecks, [string]$LauncherCompilerDirectory = '')
 . (Join-Path $PSScriptRoot 'common.ps1')
 Assert-DotNet10
 if (-not $SkipChecks) {
@@ -19,6 +19,15 @@ foreach ($rid in $RuntimeIdentifier) {
         Move-Item -LiteralPath $output -Destination $backup
     }
     Move-Item -LiteralPath $staging -Destination $output
-    Invoke-CheckedNative 'dotnet' @('run', '--project', (Join-Path $PSScriptRoot 'pack/RvzConverter.Pack.csproj'), '-c', 'Release', '--', $output, $rid, (Join-Path $ProjectRoot 'artifacts/packages'))
+    $packArguments = @($output, $rid, (Join-Path $ProjectRoot 'artifacts/packages'))
+    if ($rid.StartsWith('win-')) {
+        $launcher = Assert-ArtifactPath (Join-Path $ProjectRoot "artifacts/publish/launchers/$rid/RVZConverter.exe")
+        & (Join-Path $PSScriptRoot 'build-windows-launcher.ps1') -RuntimeIdentifier $rid -OutputPath $launcher -CompilerDirectory $LauncherCompilerDirectory
+        $packArguments += $launcher
+    }
+    $packCommand = @('run', '--project', (Join-Path $PSScriptRoot 'pack/RvzConverter.Pack.csproj'), '-c', 'Release', '--')
+    $packCommand += $packArguments
+    Invoke-CheckedNative 'dotnet' $packCommand
+    if ($rid.StartsWith('win-')) { & (Join-Path $PSScriptRoot 'test-windows-launcher.ps1') -Archive (Join-Path $ProjectRoot "artifacts/packages/RVZConverter-$rid.zip") }
     Write-Host "Self-contained publish complete: $output. Native runtime validation is a separate check."
 }
