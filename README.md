@@ -1,6 +1,6 @@
 # RVZ Converter
 
-RVZ Converter is a desktop application for converting Wii and GameCube disc images. It is created by **Petrus-Canisius** and built with C#, .NET 10 and Avalonia. The compact light-gray interface has a brief Windows 98-inspired style.
+RVZ Converter is a desktop application for converting Wii and GameCube disc images. It is created by **Petrus-Canisius** and built with C#, .NET 10 and Avalonia.
 
 ## Downloads
 
