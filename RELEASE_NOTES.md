@@ -13,7 +13,7 @@ Created by **Petrus-Canisius**. DolphinTool and Wiimms ISO Tools (WIT) are indep
 | macOS | x64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
 | macOS | ARM64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
 
-The new Windows package root contains `RVZConverter.exe`, `README.txt`, `app/`, `docs/`, and `licenses/`. Extract the complete archive. Keep `app/` beside the root launcher. Windows packages include the .NET runtime. They do not require administrator privileges.
+The new Windows package root contains `RVZConverter.exe`, `README.txt`, `app/`, `docs/` and `licenses/`. Extract the complete archive. Keep `app/` beside the root launcher. Windows packages include the .NET runtime. They do not require administrator privileges.
 
 The Windows launcher uses the original application icon and Petrus-Canisius metadata. It starts the application from `app/` and forwards arguments. Optional engine distributions can be placed in sibling `tools/dolphin/` and `tools/wit/` folders. You can also locate installed executables in the application. Keep engine dependencies with their executables.
 
@@ -32,7 +32,7 @@ Routes depend on engine availability and image readability. Same-format conversi
 
 ## Validation and limitations
 
-The Windows x64 launcher and portable layout passed a local runtime smoke test from a different working directory with paths containing spaces and Unicode. The ARM64 package was cross-published. Check [docs/VALIDATION.md](docs/VALIDATION.md) for its native runtime status and the detailed test record.
+The native build, regression, UI smoke and package jobs passed on all six configured platforms in [GitHub Actions run 40008854748](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40008854748). Windows x64 and ARM64 launcher smoke tests ran on matching native Windows runners. They launched the application from another working directory and forwarded paths with spaces and Unicode. CI did not install conversion engines or test real disc images. See [docs/VALIDATION.md](docs/VALIDATION.md) for the detailed record.
 
 This packaging update does not validate every conversion route with real disc images. Real-image conversion remains unverified. Linux and macOS downloads remain version 2.0.0 packages. The macOS packages are unsigned and not notarized.
 
