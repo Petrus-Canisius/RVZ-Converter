@@ -1,5 +1,9 @@
 name: Native build and UI smoke
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    paths-ignore: ['README.md', 'RELEASE_NOTES.md', 'docs/VALIDATION.md', 'docs/ASSERTION-INVESTIGATION.md']
+  pull_request:
+  workflow_dispatch:
 jobs:
   native:
     strategy:

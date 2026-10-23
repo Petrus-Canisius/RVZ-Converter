@@ -20,7 +20,7 @@ To add a launcher to the current user's application menu, run `sh docs/install-d
 
 ## macOS
 
-macOS 14 or newer is required. Download the Intel or Apple Silicon package for the native CPU. Extract the ZIP and open `RVZ Converter.app`. The only other root file is `README.txt`. Runtime files are under `Contents/MacOS`. Engines, documentation and notices are under `Contents/Resources`.
+macOS 14 or newer is required. Download the Intel or Apple Silicon package for the native CPU. Extract the ZIP and open `RVZ Converter.app`. The only other root file is `README.txt`. The native .NET apphost is under `Contents/MacOS`. Its managed application and runtime files are under `Contents/Resources/app`. Engines, documentation and notices are also under `Contents/Resources`.
 
 The app has no Developer ID signature and is not notarized. Build-time ad-hoc signatures support local execution and do not establish a trusted publisher identity. Nested native files are signed before the app bundle. Gatekeeper may block downloaded packages. Follow your organization's software approval process. No command to disable Gatekeeper or remove quarantine is provided. Rosetta is not required or assumed.
 

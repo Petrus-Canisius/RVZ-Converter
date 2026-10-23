@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using RvzConverter.Core;
+using Microsoft.NET.HostModel.AppHost;
 
 if (args.Length != 5) throw new ArgumentException("Usage: pack <app-directory> <rid> <output> <windows-launcher-or-none> <engine-directory>");
 string source = Path.GetFullPath(args[0]), rid = args[1], output = Path.GetFullPath(args[2]), engines = Path.GetFullPath(args[4]);
@@ -33,9 +34,16 @@ try
     if (platform == DesktopPlatform.MacOS)
     {
         string bundle = Path.Combine(layout, launch);
-        app = Path.Combine(bundle, "Contents", "MacOS");
         resources = Path.Combine(bundle, "Contents", "Resources");
+        app = Path.Combine(resources, "app");
         Directory.CreateDirectory(resources);
+        string macEntry = Path.Combine(bundle, "Contents", "MacOS", "RvzConverter");
+        Directory.CreateDirectory(Path.GetDirectoryName(macEntry)!);
+        using var runtime = JsonDocument.Parse(File.ReadAllText(Path.Combine(source, "RvzConverter.runtimeconfig.json")));
+        string runtimeVersion = runtime.RootElement.GetProperty("runtimeOptions").GetProperty("includedFrameworks")[0].GetProperty("version").GetString()!;
+        string nuget = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
+        string template = Path.Combine(nuget, "microsoft.netcore.app.host." + rid, runtimeVersion, "runtimes", rid, "native", "apphost");
+        HostWriter.CreateAppHost(template, macEntry, "../Resources/app/RvzConverter.dll", enableMacOSCodeSign: false);
         MakeMacIcon(Path.Combine(source, "App.ico"), Path.Combine(resources, "App.icns"));
         File.WriteAllText(Path.Combine(bundle, "Contents", "Info.plist"), $"""
 <?xml version="1.0" encoding="UTF-8"?>

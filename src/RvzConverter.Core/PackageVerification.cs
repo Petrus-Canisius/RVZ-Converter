@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Buffers.Binary;
 
 namespace RvzConverter.Core;
 
@@ -13,7 +14,7 @@ public static class PackageVerification
         Directory.CreateDirectory(root);
         try
         {
-            string installation = PlatformPaths.Current == DesktopPlatform.MacOS
+            string installation = PlatformPaths.Current == DesktopPlatform.MacOS && !Path.GetFileName(Path.TrimEndingDirectorySeparator(appDirectory)).Equals("app", StringComparison.OrdinalIgnoreCase)
                 ? Path.GetFullPath(Path.Combine(appDirectory, "..", "Resources")) : Path.GetFullPath(Path.Combine(appDirectory, ".."));
             string tools = Path.Combine(installation, "tools");
             using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(tools, "engines.json")));
@@ -33,6 +34,35 @@ public static class PackageVerification
             byte[] filler = new byte[65536]; new Random(12345).NextBytes(filler);
             using (var image = File.OpenWrite(iso)) { image.Position = 0x10000; image.Write(filler); }
             byte[] hash = Hash(iso);
+            string assertionCiso = Path.Combine(root, "Structurally complete synthetic assertion fixture.ciso");
+            byte[] cisoHeader = new byte[32768]; "CISO"u8.CopyTo(cisoHeader); BinaryPrimitives.WriteUInt32LittleEndian(cisoHeader.AsSpan(4), 32768);
+            byte[] isoBytes = File.ReadAllBytes(iso); int blocks = isoBytes.Length / 32768; Array.Fill(cisoHeader, (byte)1, 8, blocks);
+            using (var cisoFile = File.Create(assertionCiso)) { cisoFile.Write(cisoHeader); cisoFile.Write(isoBytes); }
+            Require(ImageInspector.Read(assertionCiso).Format == ImageFormat.CISO, "Synthetic assertion fixture detection failed.");
+            Require(await new EngineService(runner).DolphinCanRead(engines.DolphinPath, assertionCiso, "GTEST1", lines.Add, default), "DolphinTool cannot inspect the synthetic CISO fixture.");
+            byte[] assertionHash = Hash(assertionCiso);
+            lines.Add("Synthetic CISO SHA256 before diagnostic: " + Convert.ToHexString(assertionHash));
+            if (expectWit)
+            {
+                var inspected = await runner.RunAsync(new(engines.WitPath, ["DUMP", Path.GetFileName(assertionCiso)], root, "Independent WIT CISO inspection"), lines.Add, default);
+                Require(inspected.ExitCode == 0 && (inspected.StandardOutput + inspected.StandardError).Contains("GTEST1"), "WIT could not inspect the complete synthetic CISO.");
+            }
+            lines.Add("Expected failure regression: direct CISO to ISO. No output from this diagnostic is accepted.");
+            bool assertionReported = false;
+            using (var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+            {
+                try
+                {
+                    var rejected = await runner.RunAsync(new(engines.DolphinPath,
+                        ConversionPlanner.DolphinArguments(assertionCiso, Path.Combine(root, "unsupported-output.iso"), OutputFormat.ISO, Path.Combine(root, "assertion-user")), root, "Unsupported direct CISO to ISO regression"), lines.Add, timeout.Token);
+                    assertionReported = rejected.ExitCode != 0 && (rejected.StandardError + rejected.StandardOutput).Contains("GetDataSizeType");
+                }
+                catch (ConversionException ex) when (ex.Message.Contains("interactive error dialog") && ex.Message.Contains("GetDataSizeType")) { lines.Add(ex.Message); assertionReported = true; }
+            }
+            Require(assertionReported, "Dolphin's inaccurate-size rejection was not reproduced and captured.");
+            Require(Hash(assertionCiso).SequenceEqual(assertionHash), "Assertion regression changed its CISO source.");
+            lines.Add("Synthetic CISO SHA256 after diagnostic: " + Convert.ToHexString(Hash(assertionCiso)));
+            lines.Add("PASS actual inaccurate-size assertion captured. Engine stopped and awaited. Source unchanged. Diagnostic output discarded.");
             string rvz = await Convert(iso, OutputFormat.RVZ);
             string roundtrip = await Convert(rvz, OutputFormat.ISO);
             Require(Hash(roundtrip).SequenceEqual(hash), "Synthetic ISO/RVZ round trip changed data.");
@@ -46,7 +76,7 @@ public static class PackageVerification
                 Require(result.ExitCode == 0 && File.Exists(path), "DolphinTool could not create " + format);
                 inputs.Add(path);
             }
-            if (expectWit) inputs.Add(await Convert(iso, OutputFormat.CISO));
+            if (expectWit) inputs.Add(assertionCiso);
             foreach (string input in inputs)
                 foreach (var format in expectWit ? new[] { OutputFormat.ISO, OutputFormat.RVZ, OutputFormat.CISO } : new[] { OutputFormat.ISO, OutputFormat.RVZ })
                 {

@@ -20,9 +20,10 @@ public static class ConversionPlanner
             throw new ConversionException("RVZ output requires DolphinTool with the verified Zstandard level 5 / 128 KiB preset.");
         // CISO and WBFS do not carry the original disc length. Materialize a
         // bounded ISO with WIT before passing these containers to RVZ encoding.
-        if (target == OutputFormat.RVZ && source is ImageFormat.CISO or ImageFormat.WBFS)
+        if (target is OutputFormat.ISO or OutputFormat.RVZ && source is ImageFormat.CISO or ImageFormat.WBFS)
         {
-            if (!wit) throw new ConversionException($"{source} to RVZ requires WIT to create an intermediate ISO with a known length.");
+            if (!wit) throw new ConversionException($"{source} to {target} requires WIT. DolphinTool cannot convert a source with an upper-bound disc size directly. Locate a compatible native WIT executable.");
+            if (target == OutputFormat.ISO) return new([new(EngineKind.Wit, OutputFormat.ISO, false)], true);
             return new([new(EngineKind.Wit, OutputFormat.ISO, true), new(EngineKind.Dolphin, OutputFormat.RVZ, false)], true);
         }
         if (target is OutputFormat.ISO or OutputFormat.RVZ)

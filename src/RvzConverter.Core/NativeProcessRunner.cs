@@ -34,8 +34,10 @@ public sealed class NativeProcessRunner : IProcessRunner
         var stderr = ReadAsync(process.StandardError, "stderr");
         var descendants = new List<Process>();
         bool terminationUncertain = false;
+        string? interactiveError = null;
+        using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         // The registration remains alive through stream draining. Never clean files while the engine is alive.
-        using var registration = cancellationToken.Register(() =>
+        using var registration = stop.Token.Register(() =>
         {
             lock (descendants)
             {
@@ -52,7 +54,9 @@ public sealed class NativeProcessRunner : IProcessRunner
                 }
             }
         });
+        var dialogWatcher = WatchDialogs();
         await process.WaitForExitAsync(CancellationToken.None).ConfigureAwait(false);
+        await dialogWatcher.ConfigureAwait(false);
         var output = await stdout.ConfigureAwait(false);
         var error = await stderr.ConfigureAwait(false);
         registration.Dispose(); // Wait for a cancellation callback still capturing/killing descendants.
@@ -62,9 +66,27 @@ public sealed class NativeProcessRunner : IProcessRunner
             finally { child.Dispose(); }
         }
         if (terminationUncertain) throw new UnsafeTerminationException("Engine descendant termination was not fully confirmed. Cleanup is disabled for this task.");
-        cancellationToken.ThrowIfCancellationRequested();
         log?.Invoke($"[{request.Label}] Exit code: {process.ExitCode}");
+        log?.Invoke($"[{request.Label}] Captured stdout: {output.Length} characters; stderr: {error.Length} characters.");
+        cancellationToken.ThrowIfCancellationRequested();
+        if (interactiveError is not null) throw new ConversionException("The conversion engine opened an interactive error dialog and was stopped without accepting it: " + interactiveError);
         return new(process.ExitCode, output, error);
+
+        async Task WatchDialogs()
+        {
+            if (!OperatingSystem.IsWindows()) return;
+            while (!process.HasExited && !stop.IsCancellationRequested)
+            {
+                if (EngineDialogWatcher.ReadErrorDialog(process.Id) is { } message)
+                {
+                    interactiveError = message;
+                    log?.Invoke($"[{request.Label}] Interactive engine error: {message}. Stopping the engine and descendants.");
+                    stop.Cancel();
+                    return;
+                }
+                await Task.Delay(100).ConfigureAwait(false);
+            }
+        }
 
         async Task<string> ReadAsync(StreamReader reader, string channel)
         {

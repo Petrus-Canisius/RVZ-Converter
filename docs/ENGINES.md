@@ -10,7 +10,7 @@ Bundled engines are found relative to the application. Windows and Linux use sib
 
 The recovery controls in the main window can locate an external engine. A selected executable must pass the same architecture, dependency and argument checks. Valid locations are remembered in the normal user preference directory. There is no Settings screen and no automatic engine download.
 
-ISO and RVZ outputs normally use DolphinTool. The RVZ preset is Zstandard level 5 with 128 KiB blocks. WIT writes Wii/GameCube CISO and Wii-only WBFS. RVZ input requires an intermediate ISO before WIT. Some ISO/RVZ routes use WIT as a fallback when DolphinTool cannot read the source. The application inspects source data and rejects same-format conversion. WIT output transformations are not promised to preserve every source bit. Conversion cannot recreate missing source data.
+ISO and RVZ outputs from ISO, RVZ, GCZ and WIA use DolphinTool. The RVZ preset is Zstandard level 5 with 128 KiB blocks. WIT writes Wii/GameCube CISO and Wii-only WBFS. RVZ input requires an intermediate ISO before WIT. CISO and WBFS to ISO use WIT. CISO and WBFS to RVZ use a WIT intermediate ISO because those source containers do not store the original disc length. See the [assertion investigation](ASSERTION-INVESTIGATION.md). The application inspects source data and rejects same-format conversion. WIT output transformations are not promised to preserve every source bit. Conversion cannot recreate missing source data.
 
 Engine stdout and stderr are logged together with exit codes. The application validates output size and container readability before publishing files. This is not complete disc integrity verification.
 
