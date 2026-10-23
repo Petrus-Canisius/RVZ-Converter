@@ -1,0 +1,50 @@
+name: Native build and UI smoke
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: windows-latest, rid: win-x64, architecture: X64 }
+          - { runner: windows-11-arm, rid: win-arm64, architecture: Arm64 }
+          - { runner: ubuntu-24.04, rid: linux-x64, architecture: X64 }
+          - { runner: ubuntu-24.04-arm, rid: linux-arm64, architecture: Arm64 }
+          - { runner: macos-15-intel, rid: osx-x64, architecture: X64 }
+          - { runner: macos-15, rid: osx-arm64, architecture: Arm64 }
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0.x' }
+      - name: Check native architecture
+        shell: pwsh
+        run: |
+          if ([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString() -ne '${{ matrix.architecture }}') { throw 'Native architecture mismatch; emulation is not a native test.' }
+      - name: Install Linux display dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libice6 libsm6 libfontconfig1
+      - name: Build and regression tests
+        shell: pwsh
+        run: |
+          ./eng/build.ps1
+          ./eng/test.ps1
+      - name: Native UI smoke (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pwsh -File eng/test.ps1 -Visual
+      - name: Native UI smoke (Windows/macOS)
+        if: runner.os != 'Linux'
+        shell: pwsh
+        run: ./eng/test.ps1 -Visual
+      - name: Publish native package
+        shell: pwsh
+        run: ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks
+      - name: Engine test status
+        shell: pwsh
+        run: Write-Host 'Conversion engines are not provisioned by CI. Engine integration and real conversions NOT RUN.'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}-unsigned
+          path: |
+            artifacts/packages/*
+            artifacts/visual-avalonia/*

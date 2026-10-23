@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>RvzConverter</AssemblyName>
+    <RootNamespace>RvzConverter.App</RootNamespace>
+    <ApplicationIcon>Assets\App.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishTrimmed>false</PublishTrimmed>
+    <AssemblyTitle>RVZ Converter</AssemblyTitle>
+    <Description>Local disc image conversion. Created by Petrus-Canisius.</Description>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\RvzConverter.Core\RvzConverter.Core.csproj" /></ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.22" />
+    <AvaloniaResource Include="Assets\App.ico" />
+  </ItemGroup>
+</Project>

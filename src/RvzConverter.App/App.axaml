@@ -1,0 +1,6 @@
+<Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="RvzConverter.App.App" RequestedThemeVariant="Light">
+  <Application.Styles>
+    <SimpleTheme />
+    <StyleInclude Source="avares://RvzConverter/Themes/Classic.axaml" />
+  </Application.Styles>
+</Application>

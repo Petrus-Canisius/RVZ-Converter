@@ -1,0 +1,46 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <SolidColorBrush x:Key="ClassicSurface">#D4D0C8</SolidColorBrush>
+    <SolidColorBrush x:Key="ClassicInk">#161616</SolidColorBrush>
+    <SolidColorBrush x:Key="ClassicBlue">#000080</SolidColorBrush>
+    <Thickness x:Key="ClassicSpacing">6</Thickness>
+    <FontFamily x:Key="ClassicFont">Tahoma, DejaVu Sans, Liberation Sans, Arial</FontFamily>
+  </Styles.Resources>
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{StaticResource ClassicSurface}" />
+    <Setter Property="Foreground" Value="{StaticResource ClassicInk}" />
+    <Setter Property="FontFamily" Value="{StaticResource ClassicFont}" />
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+  <Style Selector="Button">
+    <Setter Property="MinHeight" Value="28" /><Setter Property="Padding" Value="12,4" />
+    <Setter Property="Background" Value="{StaticResource ClassicSurface}" />
+    <Setter Property="BorderBrush" Value="#FFFFFF" /><Setter Property="BorderThickness" Value="2" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}" BorderBrush="#404040" BorderThickness="0,0,1,1">
+          <Border BorderBrush="#FFFFFF" BorderThickness="1,1,0,0">
+            <Border BorderBrush="#808080" BorderThickness="0,0,1,1" Padding="{TemplateBinding Padding}">
+              <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" RecognizesAccessKey="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            </Border>
+          </Border>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="Button:pointerover"><Setter Property="Background" Value="#E2DED6" /></Style>
+  <Style Selector="Button:pressed"><Setter Property="Background" Value="#BBB7AF" /><Setter Property="Padding" Value="13,5,11,3" /></Style>
+  <Style Selector="Button:focus-visible"><Setter Property="Background" Value="#C4C9DC" /></Style>
+  <Style Selector="Button:disabled"><Setter Property="Opacity" Value="0.48" /></Style>
+  <Style Selector="TextBox"><Setter Property="Background" Value="White" /><Setter Property="BorderBrush" Value="#808080" /><Setter Property="BorderThickness" Value="2,2,1,1" /><Setter Property="CornerRadius" Value="0" /><Setter Property="MinHeight" Value="28" /><Setter Property="Padding" Value="5,3" /></Style>
+  <Style Selector="TextBox:focus"><Setter Property="BorderBrush" Value="#000080" /></Style>
+  <Style Selector="ListBox"><Setter Property="Background" Value="White" /><Setter Property="BorderBrush" Value="#808080" /><Setter Property="BorderThickness" Value="2,2,1,1" /><Setter Property="Padding" Value="2" /></Style>
+  <Style Selector="ListBoxItem"><Setter Property="HorizontalContentAlignment" Value="Stretch" /></Style>
+  <Style Selector="ListBoxItem:selected"><Setter Property="Background" Value="#000080" /><Setter Property="Foreground" Value="White" /></Style>
+  <Style Selector="ProgressBar"><Setter Property="Foreground" Value="#000080" /><Setter Property="Background" Value="#E8E6E0" /><Setter Property="BorderBrush" Value="#808080" /><Setter Property="BorderThickness" Value="2,2,1,1" /><Setter Property="CornerRadius" Value="0" /><Setter Property="MinHeight" Value="24" /></Style>
+  <Style Selector="RadioButton"><Setter Property="Margin" Value="0,0,16,0" /></Style>
+  <Style Selector="TextBlock.label"><Setter Property="FontWeight" Value="Bold" /></Style>
+  <Style Selector="TextBlock"><Setter Property="FontFamily" Value="{StaticResource ClassicFont}" /></Style>
+  <Style Selector="Border.group"><Setter Property="BorderBrush" Value="#888888" /><Setter Property="BorderThickness" Value="1" /><Setter Property="Padding" Value="8" /></Style>
+</Styles>

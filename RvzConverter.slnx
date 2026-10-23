@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/RvzConverter.Core/RvzConverter.Core.csproj" />
+  <Project Path="src/RvzConverter.App/RvzConverter.App.csproj" />
+  <Project Path="tests/RvzConverter.Tests/RvzConverter.Tests.csproj" />
+</Solution>

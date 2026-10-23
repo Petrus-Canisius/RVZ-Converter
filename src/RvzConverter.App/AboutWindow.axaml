@@ -1,0 +1,14 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="RvzConverter.App.AboutWindow" Title="About RVZ Converter" Width="570" Height="410" MinWidth="460" MinHeight="350" Icon="/Assets/App.ico" CanResize="True" WindowStartupLocation="CenterOwner">
+  <Grid Margin="16" RowDefinitions="*,Auto" RowSpacing="12">
+    <ScrollViewer><StackPanel Spacing="10">
+      <TextBlock Text="RVZ Converter" FontSize="19" FontWeight="Bold" />
+      <TextBlock Text="Version 2.0.0" />
+      <TextBlock Text="Application created by Petrus-Canisius." />
+      <TextBlock Text="Conversion engines are separate projects. DolphinTool is part of Dolphin Emulator, by the Dolphin Emulator project contributors (GPL-2.0-or-later). Wiimms ISO Tools is by Wiimm and contributors (GPL-2.0-or-later). Neither engine is authored by Petrus-Canisius or bundled with this application." TextWrapping="Wrap" />
+      <TextBlock Text="Interface: Avalonia (MIT). Runtime: Microsoft .NET. See THIRD-PARTY-NOTICES.md and the licenses folder distributed with this application." TextWrapping="Wrap" />
+      <TextBlock Text="Container validation checks readability, not complete disc integrity. Removed or scrubbed data cannot be reconstructed. No telemetry or automatic downloads." TextWrapping="Wrap" />
+      <TextBlock Text="Created by Petrus-Canisius" />
+    </StackPanel></ScrollViewer>
+    <Button Grid.Row="1" Content="_Close" HorizontalAlignment="Right" Click="CloseClick" IsDefault="True" IsCancel="True" />
+  </Grid>
+</Window>

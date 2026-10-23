@@ -1,0 +1,77 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="RvzConverter.App.MainWindow"
+        Title="RVZ Converter · Petrus-Canisius" Width="900" Height="790" MinWidth="660" MinHeight="580" Icon="/Assets/App.ico">
+  <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="10" RowSpacing="8">
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+      <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Image Source="/Assets/App.ico" Width="24" Height="24" />
+        <TextBlock Text="RVZ Converter" FontWeight="Bold" FontSize="17" VerticalAlignment="Center" />
+      </StackPanel>
+      <Button Grid.Column="1" Content="_About" Click="AboutClick" />
+    </Grid>
+    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <StackPanel Spacing="9">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+          <TextBlock Classes="label" Text="1. Source images" VerticalAlignment="Center" />
+          <Button Grid.Column="1" Content="_Add files…" Click="AddClick" IsEnabled="{Binding CanEdit}" />
+          <Button Grid.Column="2" Content="_Remove selected" Click="RemoveClick" IsEnabled="{Binding CanEdit}" />
+        </Grid>
+        <TextBlock Text="Add or drop ISO, RVZ, GCZ, WIA, CISO or WBFS images. Format and platform are read from image data." TextWrapping="Wrap" />
+        <ListBox Name="QueueList" Height="140" ItemsSource="{Binding Queue}" SelectionMode="Multiple" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DragDrop.AllowDrop="True" AutomationProperties.Name="Conversion queue">
+          <ListBox.ItemTemplate><DataTemplate>
+            <Grid ColumnDefinitions="*,100,64" ColumnSpacing="8" Margin="2">
+              <StackPanel><TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Path}" /><TextBlock Text="{Binding Detail}" FontSize="12" TextWrapping="Wrap" /></StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding Status}" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="2" Text="{Binding Elapsed}" VerticalAlignment="Center" />
+            </Grid>
+          </DataTemplate></ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Text="{Binding EmptyMessage}" IsVisible="{Binding IsEmpty}" TextWrapping="Wrap" />
+        <Border Classes="group"><StackPanel Spacing="7">
+          <TextBlock Classes="label" Text="2. Output format" />
+          <StackPanel Orientation="Horizontal" IsEnabled="{Binding CanEdit}">
+            <RadioButton Content="_ISO" GroupName="Format" IsChecked="{Binding IsIso}" IsEnabled="{Binding IsoAvailable}" />
+            <RadioButton Content="_RVZ" GroupName="Format" IsChecked="{Binding IsRvz}" IsEnabled="{Binding RvzAvailable}" />
+            <RadioButton Content="_CISO" GroupName="Format" IsChecked="{Binding IsCiso}" IsEnabled="{Binding CisoAvailable}" />
+            <RadioButton Content="_WBFS" GroupName="Format" IsChecked="{Binding IsWbfs}" IsEnabled="{Binding WbfsAvailable}" />
+          </StackPanel>
+          <TextBlock Text="RVZ preset: Zstandard, level 5, 128 KiB blocks. CISO means Wii/GameCube CISO." TextWrapping="Wrap" />
+          <CheckBox Content="Split WBFS into FAT32-compatible parts (4000 MiB, below 4 GiB)" IsChecked="{Binding SplitWbfs}" IsEnabled="{Binding CanEdit}" />
+          <TextBlock Text="{Binding RouteMessage}" TextWrapping="Wrap" />
+        </StackPanel></Border>
+        <Grid ColumnDefinitions="110,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="6" IsEnabled="{Binding CanEdit}">
+          <TextBlock Text="3. Destination:" VerticalAlignment="Center" />
+          <TextBox Grid.Column="1" Text="{Binding Destination}" ToolTip.Tip="{Binding Destination}" AutomationProperties.Name="Destination folder" />
+          <Button Grid.Column="2" Content="_Browse…" Click="DestinationClick" />
+          <TextBlock Grid.Row="1" Text="Temporary folder:" VerticalAlignment="Center" />
+          <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TemporaryDirectory}" ToolTip.Tip="{Binding TemporaryDirectory}" AutomationProperties.Name="Temporary folder" />
+          <Button Grid.Row="1" Grid.Column="2" Content="Browse…" Click="TemporaryClick" AutomationProperties.Name="Browse temporary folder" />
+        </Grid>
+        <Border Classes="group"><StackPanel Spacing="6">
+          <TextBlock Text="{Binding EngineMessage}" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Spacing="6" IsEnabled="{Binding CanEdit}">
+            <Button Content="Locate _DolphinTool…" Click="DolphinClick" IsVisible="{Binding DolphinMissing}" />
+            <Button Content="Locate W_IT…" Click="WitClick" IsVisible="{Binding WitMissing}" />
+            <Button Content="Recheck engines" Click="RecheckClick" />
+          </StackPanel>
+        </StackPanel></Border>
+      </StackPanel>
+    </ScrollViewer>
+    <StackPanel Grid.Row="2" Spacing="7">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="6">
+          <Button Content="_Start" Click="StartClick" IsEnabled="{Binding CanStart}" MinWidth="95" />
+          <Button Grid.Column="1" Content="_Cancel" Click="CancelClick" IsEnabled="{Binding IsRunning}" MinWidth="95" />
+          <Button Grid.Column="3" Content="_Open output folder" Click="OpenOutputClick" />
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="{Binding Progress.QueuePosition}" /><TextBlock Grid.Column="1" Text="{Binding Progress.PercentageText}" /></Grid>
+        <ProgressBar Name="ConversionProgress" Height="24" Minimum="0" Maximum="100" Value="{Binding Progress.Value}" IsIndeterminate="{Binding Progress.IsIndeterminate}" AutomationProperties.Name="Conversion progress" />
+        <TextBlock Text="{Binding Progress.Operation}" TextWrapping="Wrap" />
+        <Expander Header="Conversion log" HorizontalContentAlignment="Stretch">
+          <StackPanel Spacing="6">
+            <TextBox Text="{Binding LogText}" IsReadOnly="True" AcceptsReturn="True" Height="180" TextWrapping="NoWrap" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Consolas, DejaVu Sans Mono, monospace" AutomationProperties.Name="Conversion log" />
+            <Button Content="_Export log…" Click="ExportClick" HorizontalAlignment="Right" />
+          </StackPanel>
+        </Expander>
+    </StackPanel>
+    <Border Grid.Row="3" BorderBrush="#888888" BorderThickness="0,1,0,0" Padding="0,7,0,0"><TextBlock Text="Created by Petrus-Canisius" FontSize="12" /></Border>
+  </Grid>
+</Window>
