@@ -1,22 +1,31 @@
-# Platform requirements and limitations
+# Platform requirements and installation
 
-One Avalonia 11.3.22 application targets .NET 10 on six runtime identifiers. Avalonia provides the shared interface without a Windows Desktop dependency. See [Avalonia platform support](https://docs.avaloniaui.net/docs/supported-platforms), [.NET supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md) and [Linux runtime dependencies](https://learn.microsoft.com/en-us/dotnet/core/install/linux).
+The application uses one Avalonia interface and includes the .NET 10 runtime. Packages are architecture specific. No administrator or root access is needed to run them.
 
-Self-contained packages include .NET. They do not include operating system libraries, a display server or conversion engines.
+## Windows
 
-- **Windows:** use supported Windows 10/11 x64 or Windows 11 ARM64. Administrator privileges are not required. Extract the complete portable ZIP and start the root `RVZConverter.exe`. Keep the `app` directory beside it. Optional engine distributions can go in sibling `tools/dolphin` and `tools/wit` directories. DolphinTool needs its matching Visual C++ runtime. WIT needs its Cygwin DLLs. Building the Windows launcher requires Visual Studio C++ build tools or a matching MinGW cross compiler.
-- **Linux:** glibc is required. Alpine/musl is not targeted. Use X11 or XWayland. The app needs X11 libraries (`libX11`, `libICE`, `libSM`), Fontconfig, readable fonts, Skia/HarfBuzz and the .NET native dependencies. The .NET dependencies include libc, libgcc, libstdc++, ICU, OpenSSL and zlib.
+Extract the complete ZIP. Open the root `RVZConverter.exe`. Keep `app`, `tools`, `docs` and `licenses` together. The native launcher resolves `app/RvzConverter.exe` from its own path and forwards arguments. Application DLLs stay under `app`.
 
-On Ubuntu 24.04, a typical base set is `libx11-6 libice6 libsm6 libfontconfig1 libicu74 libssl3t64 zlib1g libgcc-s1 libstdc++6`. Package names vary by release. File pickers and folder launching need the desktop portal or file manager. Check the apphost and native `.so` files with `ldd`. Linux ARM64 needs native ARM64 libraries and engines. Native Linux execution was NOT RUN on this Windows host.
+Native engine builds use the static Microsoft C++ runtime. WIT on Windows x64 includes its app-local Cygwin runtime. No system component is installed at app startup. Windows 11 is the desktop target. Windows ARM64 includes DolphinTool only and cannot produce CISO or WBFS without a future compatible native WIT port. It is not a complete engine package.
 
-- **macOS:** packages target macOS 14 or newer. Each bundle contains an apphost and native libraries for its named architecture. Check native libraries with `otool -L`. Apple Silicon engines need an ARM64 slice. The app bundles use the same application source.
+## Linux
 
-The macOS packages have no Developer ID signature and are not notarized. Any SDK ad-hoc metadata is not Developer ID signing. Gatekeeper or library policies may prevent launch. Validate on a native Mac. No security-bypass command is provided. Native signing and notarization have NOT RUN.
+The build baseline is Ubuntu 24.04 with glibc 2.39. Packages target x64 or ARM64. They do not target Alpine/musl or every Linux distribution.
 
-PE, ELF and Mach-O architecture checks prove that publish files were produced. They do not prove native launch, display, permissions, library resolution, engine availability or conversion. No emulation dependency is supported. See the [validation matrix](VALIDATION.md).
+Extract the complete tar.gz archive and run `./RVZConverter`. Preserve executable permissions. The root shell entry point resolves `app/RvzConverter` from the installation location. It supports paths containing spaces and Unicode and forwards arguments.
 
-## Native CI
+Use X11 or XWayland with readable system fonts. Ubuntu desktop dependencies include `libx11-6 libice6 libsm6 libfontconfig1 libicu74 libssl3t64 zlib1g libgcc-s1 libstdc++6 libudev1 libncurses6 libtinfo6`. Native file pickers and folder opening also need a desktop portal or file manager. These operating system ABI libraries are not redistributed. `ldd` and `readelf` results are saved by native CI. Package names differ on other distributions.
 
-`.github/workflows/native.yml` defines Windows, Linux and macOS jobs. It includes native ARM64 labels. Tests check runner architecture before launch. Linux visual smoke uses Xvfb. CI installs app dependencies, not conversion engines or game images.
+To add a launcher to the current user's application menu, run `sh docs/install-desktop.sh`. It writes only to the user's XDG application directory. Keep the package at that path afterward. Run it again after relocating the package. The original SVG icon is under `docs/App.svg`. To remove the optional entry, remove `rvz-converter.desktop` from that user directory.
 
-CI does not install DolphinTool, WIT or game images. The workflow checks runner architecture before native application and launcher smoke tests. Check its run status for the exact commit. An ARM64 cross-publish is not a substitute for the Windows ARM64 runtime test. The application does not enable emulation.
+## macOS
+
+macOS 14 or newer is required. Download the Intel or Apple Silicon package for the native CPU. Extract the ZIP and open `RVZ Converter.app`. The only other root file is `README.txt`. Runtime files are under `Contents/MacOS`. Engines, documentation and notices are under `Contents/Resources`.
+
+The app has no Developer ID signature and is not notarized. Build-time ad-hoc signatures support local execution and do not establish a trusted publisher identity. Nested native files are signed before the app bundle. Gatekeeper may block downloaded packages. Follow your organization's software approval process. No command to disable Gatekeeper or remove quarantine is provided. Rosetta is not required or assumed.
+
+## User data and temporary files
+
+Windows stores preferences and logs under `%LOCALAPPDATA%/RVZConverter`. Linux uses XDG config, cache and state directories. macOS uses the user's Application Support, Caches and Logs directories. Temporary conversion data is stored in the selected temporary directory. Application installation folders are not used for conversion output or user settings.
+
+See [technical validation](VALIDATION.md) for the exact native tests. Build or UI smoke success does not verify every conversion route or every real disc.

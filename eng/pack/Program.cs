@@ -67,7 +67,7 @@ try
     CopyDirectory(Path.Combine(engines, "licenses"), Path.Combine(resources, "licenses"));
     CopyDirectory(Path.Combine(engines, "tools"), Path.Combine(resources, "tools"));
     Copy(Path.Combine(source, "THIRD-PARTY-NOTICES.md"), Path.Combine(resources, "licenses", "THIRD-PARTY-NOTICES.md"));
-    string engineText = witAvailable ? "Includes native DolphinTool 2506 and WIT 3.05a." : "Includes native DolphinTool 2506. Native WIT is unavailable on Windows ARM64. CISO and WBFS output are unavailable in this package.";
+    string engineText = witAvailable ? "Includes native DolphinTool 2506 and WIT 3.05a+rvz1." : "Includes native DolphinTool 2506. Native WIT is unavailable on Windows ARM64. CISO and WBFS output are unavailable in this package.";
     File.WriteAllText(Path.Combine(layout, "README.txt"), $"RVZ Converter {version}\nCreated by Petrus-Canisius\n\nExtract the complete archive before running it. Open {launch} to start.\nKeep all extracted directories together. Do not run from inside an archive.\n\n{engineText}\nThe engines are independent projects. Their licenses and notices are included.\nCorresponding source is distributed as the EngineSources-{rid}.tar.gz release asset.\nThe application includes .NET. No separate .NET installation is required.\n\nSee the included docs for system requirements and optional external engine recovery.\n" + (platform == DesktopPlatform.MacOS ? "No Developer ID signature. Not notarized. Ad-hoc signatures only. Gatekeeper may block this app. See docs/PLATFORMS.md inside the app bundle.\n" : ""));
     if (platform == DesktopPlatform.Windows)
     {

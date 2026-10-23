@@ -1,0 +1,21 @@
+diff --git a/CMake/FlagsOverride.cmake b/CMake/FlagsOverride.cmake
+--- a/CMake/FlagsOverride.cmake
++++ b/CMake/FlagsOverride.cmake
+@@ -6,6 +6,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+   # and ensure that Release builds generate debug info.
+   foreach(f CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_C_FLAGS_RELEASE CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_CXX_FLAGS_RELEASE)
+     # optimize, define NDEBUG, generate debug info
+-    set(${f} "/O2 /DNDEBUG /Z7")
++    set(${f} "/O2 /DNDEBUG")
+   endforeach()
+ endif()
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -312,6 +312,5 @@ if(MSVC)
+   string(APPEND CMAKE_EXE_LINKER_FLAGS " /NXCOMPAT")
+   # Generate debug data
+-  string(APPEND CMAKE_EXE_LINKER_FLAGS " /DEBUG")
+   # Eliminate dead code and data
+   string(APPEND CMAKE_EXE_LINKER_FLAGS " /OPT:REF /OPT:ICF")
+ else()

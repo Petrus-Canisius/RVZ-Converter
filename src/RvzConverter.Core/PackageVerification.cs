@@ -27,6 +27,11 @@ public static class PackageVerification
             if (expectWit) Require(engines.WitPath.StartsWith(tools + Path.DirectorySeparatorChar, pathComparison), "WIT was found outside the package.");
             lines.Add("PASS native bundled engine discovery without PATH configuration");
             string iso = Path.Combine(root, "Synthetic non-game é 日本語 & %.iso"); ProbeImages.WriteIso(iso);
+            // WIT's initial container probe needs more than a few compressed
+            // kilobytes. Deterministic non-game filler keeps compressed fixture
+            // files above that minimum without relying on copyrighted content.
+            byte[] filler = new byte[65536]; new Random(12345).NextBytes(filler);
+            using (var image = File.OpenWrite(iso)) { image.Position = 0x10000; image.Write(filler); }
             byte[] hash = Hash(iso);
             string rvz = await Convert(iso, OutputFormat.RVZ);
             string roundtrip = await Convert(rvz, OutputFormat.ISO);
@@ -70,7 +75,8 @@ public static class PackageVerification
             ConversionOptions Options(OutputFormat format) => new(Path.Combine(root, "output " + Guid.NewGuid().ToString("N")), Path.Combine(root, "temporary"), format, true, engines.DolphinPath, engines.WitPath);
             async Task<string> Convert(string input, OutputFormat format)
             {
-                var result = (await new ConversionCoordinator(runner, new WindowsVolumeProbe()).RunAsync([input], Options(format), log: lines.Add))[0];
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                var result = (await new ConversionCoordinator(runner, new WindowsVolumeProbe()).RunAsync([input], Options(format), log: lines.Add, token: timeout.Token))[0];
                 Require(result.State == ConversionState.Completed, result.Message);
                 lines.Add($"PASS actual engine conversion {ImageInspector.Read(input).Format} to {format}");
                 return result.Outputs[0];

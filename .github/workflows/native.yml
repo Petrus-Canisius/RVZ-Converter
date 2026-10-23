@@ -45,11 +45,29 @@ jobs:
         if: runner.os != 'Linux'
         shell: pwsh
         run: ./eng/test.ps1 -Visual
-      - name: Publish native package
+      - name: Restore native engine build
+        id: engine-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            artifacts/engines/${{ matrix.rid }}
+            artifacts/sources/EngineSources-${{ matrix.rid }}.tar.gz
+          key: engines-v1-${{ matrix.rid }}-${{ hashFiles('eng/engines.lock.json', 'eng/build-engines.ps1', 'eng/build-wit*', 'eng/inspect-*', 'eng/patches/*') }}
+      - name: Build native conversion engines
+        if: steps.engine-cache.outputs.cache-hit != 'true'
         shell: pwsh
-        run: |
-          ./eng/build-engines.ps1 -RuntimeIdentifier '${{ matrix.rid }}'
-          ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks
+        run: ./eng/build-engines.ps1 -RuntimeIdentifier '${{ matrix.rid }}'
+      - name: Save verified native engines
+        if: steps.engine-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            artifacts/engines/${{ matrix.rid }}
+            artifacts/sources/EngineSources-${{ matrix.rid }}.tar.gz
+          key: ${{ steps.engine-cache.outputs.cache-primary-key }}
+      - name: Publish application archive
+        shell: pwsh
+        run: ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks
       - name: Extracted package integration (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a pwsh -File eng/test-package.ps1 -RuntimeIdentifier '${{ matrix.rid }}'

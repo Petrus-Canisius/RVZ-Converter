@@ -1,0 +1,14 @@
+diff --git a/project/src/lib-gcz.c b/project/src/lib-gcz.c
+--- a/project/src/lib-gcz.c
++++ b/project/src/lib-gcz.c
+@@ -228,7 +228,9 @@ enumFileType AnalyzeGCZ
+ 	    return 0;
+     }
+ 
+-    return head->sub_type == GCZ_TYPE ? FT_A_GCZ : FT_A_NKIT_GCZ;
++    // Dolphin uses subtype 0 for GameCube and 1 for Wii.
++    // Both are ordinary GCZ containers, not NKit.
++    return head->sub_type <= GCZ_TYPE ? FT_A_GCZ : FT_A_NKIT_GCZ;
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////
