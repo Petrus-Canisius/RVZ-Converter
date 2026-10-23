@@ -12,7 +12,8 @@ internal static class Assert
 }
 internal sealed class Fixture : IDisposable
 {
-    public string Root { get; } = Path.Combine(Path.GetTempPath(), "rvz-tests-" + Guid.NewGuid().ToString("N"));
+    private static readonly string PhysicalTempDirectory = ResolvePhysicalDirectory(Path.GetTempPath());
+    public string Root { get; } = Path.Combine(PhysicalTempDirectory, "rvz-tests-" + Guid.NewGuid().ToString("N"));
     public string Destination => Path.Combine(Root, "output [été] & 100% #");
     public string Temporary => Path.Combine(Root, "temporary [日本語] & %");
     public string Engine => Environment.ProcessPath!;
@@ -57,8 +58,28 @@ internal sealed class Fixture : IDisposable
     public void Clean() { Assert.Equal(0, Directory.GetFileSystemEntries(Temporary).Length); Assert.True(!Directory.GetDirectories(Destination).Any(p => Path.GetFileName(p).StartsWith(".rvz-stage-"))); }
     public void Dispose()
     {
-        string full = Path.GetFullPath(Root); Assert.True(Path.GetFileName(full).StartsWith("rvz-tests-") && full.StartsWith(Path.GetFullPath(Path.GetTempPath()), StringComparison.OrdinalIgnoreCase));
+        string full = Path.GetFullPath(Root); Assert.True(Path.GetFileName(full).StartsWith("rvz-tests-") && full.StartsWith(PhysicalTempDirectory, StringComparison.OrdinalIgnoreCase));
         if (Directory.Exists(full)) Directory.Delete(full, true);
+    }
+
+    private static string ResolvePhysicalDirectory(string path)
+    {
+        string full = Path.GetFullPath(path);
+        if (!OperatingSystem.IsMacOS()) return full;
+
+        string root = Path.GetPathRoot(full)!;
+        var current = new DirectoryInfo(root);
+        foreach (string segment in full[root.Length..].Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
+        {
+            var next = new DirectoryInfo(Path.Combine(current.FullName, segment));
+            if (next.Exists && (next.Attributes & FileAttributes.ReparsePoint) != 0)
+                current = next.ResolveLinkTarget(returnFinalTarget: true) as DirectoryInfo
+                    ?? throw new IOException($"Could not resolve temporary directory link '{next.FullName}'.");
+            else
+                current = next;
+        }
+
+        return Path.GetFullPath(current.FullName);
     }
 }
 internal sealed class FakeVolume(bool shared = true, string fs = "NTFS", long free = long.MaxValue) : IVolumeProbe
