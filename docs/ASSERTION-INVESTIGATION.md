@@ -30,6 +30,8 @@ CISO and WBFS to ISO now use WIT. CISO and WBFS to RVZ use WIT to create an inte
 
 WIT's CISO reader uses at least a single-layer Wii virtual length, including for GameCube data. ISO output may therefore include zero padding. This does not restore missing source data. The synthetic regression uses a 256 KiB CISO block map that can represent this length. Output size checks remain enforced.
 
+CISO maps with a capacity below WIT's minimum padded ISO length are rejected before conversion. Otherwise WIT could write beyond the source bound used for disk budgeting. This is an unsupported source/engine combination, not a corruption diagnosis. Regression tests verify rejection, source protection, cleanup and continuation of the queue.
+
 The inspected DolphinTool `convert --help` and command parser offer no documented batch or noninteractive error option. No guessed flag is used. Assertions and integrity checks remain enabled.
 
 The Windows process runner watches owned native error dialogs. It records their text, stops the engine and descendants, waits for termination and returns a conversion failure. It never clicks a response. Cancellation keeps its own cancelled status. stdout and stderr remain concurrently drained. Every stopped process has its exit code recorded. Cleanup remains limited to the current task's owned directories. Pre-existing destinations and source images are preserved.

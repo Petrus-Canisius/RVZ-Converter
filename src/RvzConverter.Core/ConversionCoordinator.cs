@@ -40,6 +40,9 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
                 && await new EngineService(runner).DolphinCanRead(options.DolphinPath, Path.GetFullPath(source), image.Disc.GameId, log, token);
             var route = ConversionPlanner.Plan(image.Format, image.Disc.Platform, options.Format,
                 engines.DolphinAvailable, engines.WitAvailable, engines.RvzPresetAvailable, dolphinReads);
+            if (image.Format == ImageFormat.CISO && image.Disc.IsoSize < ImageInspector.WbfsVirtualSize / 2 &&
+                route.Steps.Any(step => step.Engine == EngineKind.Wit && step.Format == OutputFormat.ISO))
+                throw new ConversionException("This CISO block map is smaller than WIT's minimum padded ISO length. This source/engine route is unsupported. Use a compatible ISO, RVZ, GCZ, or WIA source instead. The source has not been changed.");
             string destination = Path.GetFullPath(options.Destination), temporary = Path.GetFullPath(options.TemporaryDirectory);
             SafeFiles.RejectReparseAncestors(destination); SafeFiles.RejectReparseAncestors(temporary);
             Directory.CreateDirectory(destination); Directory.CreateDirectory(temporary);

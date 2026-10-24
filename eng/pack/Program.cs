@@ -42,7 +42,15 @@ try
         using var runtime = JsonDocument.Parse(File.ReadAllText(Path.Combine(source, "RvzConverter.runtimeconfig.json")));
         string runtimeVersion = runtime.RootElement.GetProperty("runtimeOptions").GetProperty("includedFrameworks")[0].GetProperty("version").GetString()!;
         string nuget = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
-        string template = Path.Combine(nuget, "microsoft.netcore.app.host." + rid, runtimeVersion, "runtimes", rid, "native", "apphost");
+        string hostRelative = Path.Combine(runtimeVersion, "runtimes", rid, "native", "apphost");
+        // Native SDK installs supply their own architecture's host under packs.
+        // Cross-target restores supply it through the NuGet package cache.
+        string sdkRoot = Path.GetFullPath(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "..", "..", ".."));
+        string[] templates = [Path.Combine(sdkRoot, "packs", "Microsoft.NETCore.App.Host." + rid, hostRelative),
+            Path.Combine(nuget, "microsoft.netcore.app.host." + rid, hostRelative)];
+        string template = templates.FirstOrDefault(File.Exists)
+            ?? throw new FileNotFoundException("The matching .NET apphost template is missing from both the SDK and NuGet cache.");
+        Validate(template);
         HostWriter.CreateAppHost(template, macEntry, "../Resources/app/RvzConverter.dll", enableMacOSCodeSign: false);
         MakeMacIcon(Path.Combine(source, "App.ico"), Path.Combine(resources, "App.icns"));
         File.WriteAllText(Path.Combine(bundle, "Contents", "Info.plist"), $"""

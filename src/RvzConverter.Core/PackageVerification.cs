@@ -10,7 +10,9 @@ public static class PackageVerification
     public static async Task<int> RunAsync(string appDirectory, string reportPath)
     {
         var lines = new List<string>();
-        string root = Path.Combine(Path.GetTempPath(), "rvz-package-" + Guid.NewGuid().ToString("N") + " é 日本語");
+        // Use the application's user cache. macOS's system temp path can
+        // traverse /var aliases that the cleanup boundary correctly rejects.
+        string root = Path.Combine(PlatformPaths.Directories.Cache, "rvz-package-" + Guid.NewGuid().ToString("N") + " é 日本語");
         Directory.CreateDirectory(root);
         try
         {

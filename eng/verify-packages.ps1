@@ -18,6 +18,9 @@ foreach ($rid in @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','os
             $prefix = if ($rid.StartsWith('osx-')) { 'RVZ Converter.app/Contents/Resources/' } else { '' }
             if ($names -notcontains ($prefix + 'tools/engines.json')) { throw "Engine manifest missing: $rid" }
             foreach ($required in @('tools/dolphin/','licenses/engines/','docs/')) { if (-not ($names | Where-Object { $_.StartsWith($prefix + $required) })) { throw "$required missing: $rid" } }
+            foreach ($required in @('GPL-3.0.txt','ENGINE-MODIFICATIONS.txt','GCC-Runtime-Exception-3.1.txt')) {
+                if ($names -notcontains ($prefix + 'licenses/engines/' + $required)) { throw "Required distribution notice missing: $rid/$required" }
+            }
             if ($rid.StartsWith('win-') -and ($names | Where-Object { $_ -match '^[^/]+\.dll$' })) { throw 'Loose DLL found at archive root.' }
             $entry = $zip.Entries | Where-Object FullName -eq ($prefix + 'tools/engines.json')
             $reader = [IO.StreamReader]::new($entry.Open()); try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
@@ -29,6 +32,9 @@ foreach ($rid in @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','os
         if ($LASTEXITCODE -ne 0) { throw "Invalid tar archive: $rid" }
         $roots = @($listing | ForEach-Object { ($_ -split '/')[0] } | Sort-Object -Unique)
         if (Compare-Object (@('RVZConverter','README.txt','app','tools','docs','licenses') | Sort-Object) $roots) { throw "Unexpected Linux archive root: $rid" }
+        foreach ($required in @('GPL-3.0.txt','ENGINE-MODIFICATIONS.txt','GCC-Runtime-Exception-3.1.txt')) {
+            if ($listing -notcontains ('licenses/engines/' + $required)) { throw "Required distribution notice missing: $rid/$required" }
+        }
         $modes = & tar -tvf $archive
         if ($LASTEXITCODE -ne 0 -or -not ($modes | Where-Object { $_ -match '^-rwxr-xr-x .* RVZConverter$' })) { throw "Executable root entry missing: $rid" }
     }

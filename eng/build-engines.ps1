@@ -37,6 +37,9 @@ $notices = Join-Path $engineRoot 'licenses/engines'
 [IO.Directory]::CreateDirectory((Join-Path $tools 'dolphin')) | Out-Null
 [IO.Directory]::CreateDirectory((Join-Path $tools 'wit')) | Out-Null
 [IO.Directory]::CreateDirectory($notices) | Out-Null
+foreach ($noticeFile in Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'licenses/engines') -File) {
+    Copy-Item -LiteralPath $noticeFile.FullName -Destination $notices
+}
 $build = Assert-ArtifactPath (Join-Path $ProjectRoot "artifacts/engine-build/$RuntimeIdentifier/dolphin")
 $cmakeArgs = @('-S',$dolphin,'-B',$build,'-G','Ninja','-DCMAKE_BUILD_TYPE=Release','-DCMAKE_POLICY_VERSION_MINIMUM=3.5','-DENABLE_QT=OFF','-DENABLE_NOGUI=OFF','-DENABLE_TESTS=OFF','-DENABLE_CLI_TOOL=ON','-DENABLE_ANALYTICS=OFF','-DENABLE_AUTOUPDATE=OFF','-DENABLE_VULKAN=OFF','-DENABLE_X11=OFF','-DENABLE_EGL=OFF','-DENABLE_ALSA=OFF','-DENABLE_PULSEAUDIO=OFF','-DENABLE_CUBEB=OFF','-DENABLE_SDL=OFF','-DENABLE_LLVM=OFF','-DENABLE_EVDEV=OFF','-DENABLE_HWDB=OFF','-DUSE_UPNP=OFF','-DUSE_MGBA=OFF','-DUSE_RETRO_ACHIEVEMENTS=OFF','-DUSE_DISCORD_PRESENCE=OFF','-DENCODE_FRAMEDUMPS=OFF','-DUSE_SYSTEM_LIBS=OFF','-DBUILD_SHARED_LIBS=OFF','-DDISTRIBUTOR=RVZConverter')
 if ($RuntimeIdentifier.StartsWith('win-')) {
@@ -66,7 +69,6 @@ if ($RuntimeIdentifier -eq 'win-x64') {
 Copy-Item -LiteralPath (Join-Path $dolphin 'COPYING') -Destination (Join-Path $notices 'Dolphin-GPL-2.0.txt')
 Copy-Item -LiteralPath (Join-Path $dolphin 'LICENSES') -Destination (Join-Path $notices 'Dolphin-LICENSES') -Recurse
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'wit/project/gpl-2.0.txt') -Destination (Join-Path $notices 'WIT-GPL-2.0.txt')
-Set-Content (Join-Path $notices 'ENGINE-MODIFICATIONS.txt') -Encoding utf8 -Value 'Distribution modifications by Petrus-Canisius, 2026-10-23: WIT 3.05a+rvz1 accepts standard GameCube GCZ subtype 0 and honors OPENSSL_NO_ASM for portable SHA-1 in the Windows build. DolphinTool 2506 omits optional Windows PDB generation. Patches and complete corresponding source are in the matching EngineSources release asset. Original engine authorship is unchanged. GPL version 3 is used under the upstream later-version option.'
 # Include all source-tree dependency notices, not just the top-level GPL text.
 foreach ($file in Get-ChildItem (Join-Path $dolphin 'Externals') -Recurse -File | Where-Object { $_.Name -match '^(COPYING|LICENSE|LICENCE|COPYRIGHT|NOTICE|AUTHORS)([.\-].*)?$' }) {
     $relative = $file.FullName.Substring($dolphin.Length).TrimStart([char[]]'\/')

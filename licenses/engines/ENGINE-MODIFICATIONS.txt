@@ -1,0 +1,18 @@
+Engine distribution modifications by Petrus-Canisius, 2026-10-24.
+
+DolphinTool 2506 uses source revision aed420c95d7a152363917e4b827d6cc85eacb502.
+Optional Windows PDB generation is removed. MSVC C++ unwind semantics are
+explicitly enabled for the Ninja build. Conversion assertions remain enabled.
+
+WIT 3.05a+rvz1 uses source revision fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58.
+The GCZ reader accepts standard GameCube subtype 0. OPENSSL_NO_ASM selects
+portable SHA-1 in the Windows build. macOS uses classic linker relocations
+for upstream packed pointer tables. The build materials record all flags.
+
+Original engine authorship is unchanged. These modifications do not attribute
+the conversion engines to the application creator. GPL version 3 is used
+under the upstream later-version option. See GPL-3.0.txt and dependency notices.
+
+Corresponding preferred sources, pinned submodules, patches and build materials
+are supplied in the matching EngineSources release asset. Windows x64 source
+also includes the exact redistributed Cygwin, ncurses and zlib source packages.
