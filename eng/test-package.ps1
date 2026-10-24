@@ -9,6 +9,23 @@ $package = Join-Path $testRoot 'relocated package é 日本語'
 [IO.Directory]::CreateDirectory($working) | Out-Null
 $report = Join-Path $testRoot 'engine-integration.txt'
 $savedPath = $env:PATH
+function Invoke-PackagedApplication([string]$Executable, [string[]]$Arguments) {
+    # PowerShell's call operator does not wait for Windows GUI executables.
+    # Wait on the native process and check its actual exit status explicitly.
+    $start = [Diagnostics.ProcessStartInfo]::new($Executable)
+    $start.UseShellExecute = $false
+    $start.WorkingDirectory = (Get-Location).ProviderPath
+    foreach ($argument in $Arguments) { $start.ArgumentList.Add($argument) }
+    $process = [Diagnostics.Process]::Start($start)
+    try {
+        if (-not $process.WaitForExit(600000)) {
+            $process.Kill($true)
+            $process.WaitForExit()
+            throw 'Packaged application verification timed out. The process tree was stopped.'
+        }
+        if ($process.ExitCode -ne 0) { throw "Packaged application failed with exit code $($process.ExitCode). See engine-integration.txt." }
+    } finally { $process.Dispose() }
+}
 try {
     if ($RuntimeIdentifier.StartsWith('osx-')) { Invoke-CheckedNative 'ditto' @('-x','-k',$archive,$package) }
     elseif ($extension -eq '.zip') { [IO.Compression.ZipFile]::ExtractToDirectory($archive,$package) }
@@ -23,11 +40,11 @@ try {
     $env:PATH = if ($RuntimeIdentifier.StartsWith('win-')) { "$env:SystemRoot/System32;$env:SystemRoot" } else { '/usr/bin:/bin:/usr/sbin:/sbin' }
     Push-Location $working
     try {
-        Invoke-CheckedNative $entry @('--verify-package',$report)
+        Invoke-PackagedApplication $entry @('--verify-package',$report)
         $visual = Join-Path $testRoot 'native UI'
         if ($RuntimeIdentifier.StartsWith('osx-')) {
             Invoke-CheckedNative '/usr/bin/open' @('-W','-n', (Join-Path $package 'RVZ Converter.app'),'--args','--smoke-ui',$visual)
-        } else { Invoke-CheckedNative $entry @('--smoke-ui',$visual) }
+        } else { Invoke-PackagedApplication $entry @('--smoke-ui',$visual) }
         if (-not (Test-Path -LiteralPath (Join-Path $visual 'native-launch.txt')) -or (Test-Path -LiteralPath (Join-Path $visual 'error.txt'))) { throw 'Extracted package UI launch failed.' }
     } finally { Pop-Location }
     Get-Content -LiteralPath $report

@@ -1,8 +1,8 @@
-param([string]$AssetDirectory = 'artifacts/release')
+param([string]$AssetDirectory = 'artifacts/release', [ValidateSet('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')][string[]]$RuntimeIdentifier = @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64'))
 . (Join-Path $PSScriptRoot 'common.ps1')
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $directory = if ([IO.Path]::IsPathRooted($AssetDirectory)) { $AssetDirectory } else { Join-Path $ProjectRoot $AssetDirectory }
-foreach ($rid in @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')) {
+foreach ($rid in $RuntimeIdentifier) {
     $extension = if ($rid.StartsWith('linux-')) { '.tar.gz' } else { '.zip' }
     $archive = Join-Path $directory "RVZConverter-$rid$extension"
     if (-not (Test-Path -LiteralPath $archive)) { throw "Missing $rid application archive." }
