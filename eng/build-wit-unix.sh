@@ -17,7 +17,7 @@ else
 fi
 # GCC 10 changed common-symbol defaults. WIT 3.05a uses the earlier C convention.
 export NO_FUSE=1
-make -j3 wit RVZ_MBEDTLS=1 HAVE_SHA=0 HAVE_ZLIB=1 XDEF=-DHAVE_ZLIB=1 XFLAGS="-fcommon -ffile-prefix-map=$source_dir=. -Wno-error=implicit-function-declaration" "${linker_flags[@]}"
+make -j3 wit RVZ_MBEDTLS=1 HAVE_SHA=0 HAVE_ZLIB=1 XDEF=-DHAVE_ZLIB=1 XFLAGS="-fcommon -ffile-prefix-map=$source_dir=." "${linker_flags[@]}"
 cc -std=gnu99 -Isrc -Irvz-mbedtls/include '-DMBEDTLS_CONFIG_FILE="crypto/rvz-sha1-config.h"' rvz-sha1-selftest.c src/rvz-sha1.c rvz-mbedtls/library/sha1.c rvz-mbedtls/library/platform_util.c -o rvz-sha1-selftest
 ./rvz-sha1-selftest
 mkdir -p "$(dirname "$destination")"
