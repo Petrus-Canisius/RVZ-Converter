@@ -6,6 +6,10 @@ The affected local Windows x64 engine identifies itself as Dolphin 2609a. Its em
 
 In that exact revision, `Source/Core/DiscIO/FileBlob.cpp:44` asserts `infile->GetDataSizeType() == DataSizeType::Accurate` in `ConvertToPlain`. The new bundled DolphinTool is based on 2506, revision `aed420c95d7a152363917e4b827d6cc85eacb502`. It has the same precondition at `FileBlob.cpp:52`. Changing engine versions alone does not remove this format constraint.
 
+The Windows x64 2.0.2 package's locally built DolphinTool SHA256 is `e0977dc0bf80cc9ba4a1ca41c5306a02eae0f5d90f0554b81fded01ec637edc8`. Its WIT SHA256 is `26164f5425b131dfcc1ce1286554840c5681b88eee6dc44e98184d3392fc1517`. These hashes identify the packaged builds. They are not upstream signatures.
+
+Source references: [2609a assertion](https://github.com/dolphin-emu/dolphin/blob/409881c34357d0f105fd473167d15ab0bd9c1628/Source/Core/DiscIO/FileBlob.cpp#L44), [2506 assertion](https://github.com/dolphin-emu/dolphin/blob/aed420c95d7a152363917e4b827d6cc85eacb502/Source/Core/DiscIO/FileBlob.cpp#L52), [CISO reader](https://github.com/dolphin-emu/dolphin/blob/aed420c95d7a152363917e4b827d6cc85eacb502/Source/Core/DiscIO/CISOBlob.h), [WBFS reader](https://github.com/dolphin-emu/dolphin/blob/aed420c95d7a152363917e4b827d6cc85eacb502/Source/Core/DiscIO/WbfsBlob.h), and [WIT CISO length calculation](https://github.com/Wiimm/wiimms-iso-tools/blob/fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58/project/src/lib-ciso.c#L337).
+
 ## Cause
 
 Dolphin's `CISOFileReader::GetDataSizeType()` and `WbfsFileReader::GetDataSizeType()` explicitly return `UpperBound`. Those containers do not record an accurate original image length. A readable disc header does not make that length accurate. Plain ISO and RVZ conversion routines require accurate length information. Direct Dolphin conversion from these readers is therefore an unsupported route.

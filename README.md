@@ -1,72 +1,77 @@
 # RVZ Converter
 
-RVZ Converter is a desktop application for converting Wii and GameCube disc images. It is created by **Petrus-Canisius** and built with C#, .NET 10 and Avalonia.
+RVZ Converter converts Wii and GameCube disc images. Created by **Petrus-Canisius**. It uses .NET 10 and Avalonia with a compact Windows 98-inspired interface.
 
 ## Downloads
 
-Release `v2.0.1` contains the updated Windows portable packages. Linux and macOS downloads remain at version `2.0.0`. See the [GitHub Releases page](https://github.com/Petrus-Canisius/RVZ-Converter/releases/tag/v2.0.1).
+Version 2.0.2 currently provides the corrected Windows x64 package. Extract the complete archive before launching. The application includes its .NET runtime and conversion engines.
 
 | Operating system | Architecture | Download |
 | --- | --- | --- |
-| Windows | x64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-x64.zip) |
-| Windows | ARM64 | [ZIP, version 2.0.1](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-arm64.zip) |
-| Linux | x64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-x64.tar.gz) |
-| Linux | ARM64 | [tar.gz, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-linux-arm64.tar.gz) |
-| macOS | x64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-x64.zip) |
-| macOS | ARM64 | [ZIP, version 2.0.0](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/RVZConverter-osx-arm64.zip) |
+| Windows | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-win-x64.zip) |
+| Windows | ARM64 | [Earlier 2.0.1 ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-arm64.zip) |
+| Linux | x64 | Pending native package |
+| Linux | ARM64 | Pending native package |
+| macOS | Intel | Pending native package |
+| macOS | Apple Silicon | Pending native package |
 
-See the [Windows package checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/SHA256SUMS.txt) for version 2.0.1. The earlier [checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.0-rc.1/SHA256SUMS.txt) cover Linux and macOS packages. Extract each complete package. The applications include .NET and do not need a separate .NET installation.
+[Release notes](https://github.com/Petrus-Canisius/RVZ-Converter/releases/tag/v2.0.2) and [SHA256 checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/SHA256SUMS.txt).
 
-## Formats and use
+The earlier Windows ARM64 download has no bundled engines and does not include the 2.0.2 assertion fix. Other new packages are held pending validation of the revised engines. Hosted native CI is temporarily unavailable. See [technical validation records](docs/VALIDATION.md).
 
-The application detects format and platform from image data. Supported inputs are ISO, RVZ, GCZ, WIA, CISO and WBFS. Outputs are ISO, RVZ, CISO and WBFS.
+Windows ARM64 source builds can include native DolphinTool but no native WIT. CISO and WBFS output require WIT. CISO and WBFS input also require WIT for ISO or RVZ output. No emulated engine is bundled.
 
-### Implemented conversion matrix
+## Use
+
+1. Windows: open the root `RVZConverter.exe`. Keep `app/` and `tools/` beside it.
+2. Linux: run the root `RVZConverter`. Keep the full directory together.
+3. macOS: open `RVZ Converter.app`. Keep the app bundle intact.
+4. Add source images. Choose the output format, destination and temporary folder.
+5. Start the queue. The progress bar and log show each conversion step.
+
+Bundled engines are found without changing PATH. Missing engines have a Locate button in the main window. There is no Settings screen. Preferences and logs stay in the platform's user data directories.
+
+## Supported conversions
+
+Input format and disc platform are detected from image data.
 
 | Input | ISO | RVZ | CISO | WBFS (Wii only) |
 | --- | --- | --- | --- | --- |
-| ISO | Same format | DolphinTool | WIT | WIT |
-| RVZ | DolphinTool | Same format | DolphinTool to ISO, then WIT | DolphinTool to ISO, then WIT |
+| ISO | Not supported | DolphinTool | WIT | WIT |
+| RVZ | DolphinTool | Not supported | DolphinTool to ISO, then WIT | DolphinTool to ISO, then WIT |
 | GCZ | DolphinTool or WIT fallback | DolphinTool | WIT | WIT |
 | WIA | DolphinTool or WIT fallback | DolphinTool | WIT | WIT |
-| CISO | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | Not supported | WIT |
-| WBFS | DolphinTool or WIT fallback | DolphinTool or WIT → ISO → DolphinTool fallback | WIT | Not supported |
+| CISO | WIT | WIT to ISO, then DolphinTool | Not supported | WIT |
+| WBFS | WIT | WIT to ISO, then DolphinTool | WIT | Not supported |
 
-The application enables a route only when an installed engine passes its checks and can inspect the image. Same-format conversions are not supported. WBFS output is restricted to Wii discs. CISO means the Wii/GameCube format, not PSP CSO.
+Routes require compatible engines that can inspect the image. Same-format conversions are not supported. WBFS output is restricted to Wii discs. CISO means Wii/GameCube CISO, not PSP CSO.
 
-DolphinTool handles ISO and RVZ output. If DolphinTool cannot read a source that WIT can read, WIT can create an intermediate ISO. RVZ output then needs DolphinTool. CISO and WBFS output use WIT. RVZ to CISO or WBFS needs DolphinTool to create an intermediate ISO first. Intermediate files and destination staging require extra disk space.
+CISO and WBFS do not record an accurate original image length. DolphinTool cannot convert them directly to ISO or RVZ. WIT creates ISO output or an intermediate ISO first. WIT may add zero padding. This cannot restore missing data. CISO maps smaller than WIT's minimum padded ISO length are rejected before conversion.
 
-The matrix describes implemented routes. It does not mean every route has been validated with a real disc image. See [technical validation records](docs/VALIDATION.md) for test scope and results.
+Intermediate ISO files, source snapshots and destination staging need extra disk space. RVZ uses Zstandard level 5 and 128 KiB blocks. Source images are never changed or deleted. Existing destination files are not overwritten. FAT32 WBFS parts stay below 4 GiB.
 
-1. Install the required conversion engines separately. They are **not included** in the application packages.
-2. Add images by file picker or drag and drop.
-3. Choose an output format and destination. Choose a temporary folder if needed.
-4. Start the queue. Files run in order. The log explains each conversion step.
+The table describes implemented support. It does not establish real-image verification of every route. Conversion cannot recover data removed from scrubbed, modified or incomplete sources. CISO and WBFS output are not promised to be bit-identical.
 
-The RVZ preset uses Zstandard level 5 with 128 KiB blocks. Engine versions without these options are rejected. The application never changes or removes source images. Outputs are not overwritten. CISO and WBFS transformations are not guaranteed to preserve bits. Scrubbed or incomplete source data cannot be restored.
+## Included engines
 
-## Conversion engines
+- **DolphinTool 2506**, source revision `aed420c95d7a152363917e4b827d6cc85eacb502`. Bundled in the Windows x64 2.0.2 package.
+- **WIT 3.05a+rvz1**, based on source revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`. Bundled in the Windows x64 2.0.2 package. It includes a GameCube GCZ correction and the Apache-licensed Mbed TLS 2.28.0 SHA-1 provider.
 
-Install complete native engine distributions with their dependencies. The application checks its `tools` directory, remembered paths, `PATH` and documented standard locations. It does not scan whole disks or download engines.
+Engines run as separate processes. Nothing is downloaded at application startup. External native engines remain available through Locate. Keep their dependencies with them. See [engine details](docs/ENGINES.md) and [source build instructions](docs/BUILD-ENGINES.md).
 
-- [DolphinTool](https://dolphin-emu.org/) is part of Dolphin Emulator by the Dolphin Emulator project contributors. It provides supported ISO and RVZ conversions.
-- [Wiimms ISO Tools (WIT)](https://wit.wiimm.de/) is by Wiimm and contributors. It provides supported CISO and WBFS conversions.
+The [EngineSources-win-x64.tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/EngineSources-win-x64.tar.gz) asset contains corresponding engine sources and build materials. License texts and dependency notices are included in the package. Engine authorship belongs to the Dolphin Emulator project, Wiimm and their contributors. Source code and publishing recipes cover all six target architectures. Their revised engine packages still require native validation.
 
-Neither engine is created by Petrus-Canisius. Review [engine setup and license details](docs/ENGINES.md) before installation. This application does not redistribute either engine.
+## Platform requirements
 
-## Platform requirements and installation
+- Windows 11 or later. The packages include the application runtime. Windows x64 includes the required app-local Cygwin runtime for WIT. No system component is installed silently.
+- Linux builds target Ubuntu 24.04 with glibc 2.39 or later. They require desktop libraries, X11 or XWayland, Fontconfig and fonts. See the [library list](docs/PLATFORMS.md). These builds do not support every Linux distribution.
+- macOS 14 or later. Packages have no Developer ID signature or notarization. Ad-hoc signatures do not establish publisher trust. Gatekeeper or local policy may block launch. No Rosetta dependency is assumed.
 
-Install DolphinTool and WIT separately. The application packages do not include conversion engines. Follow the [engine installation guide](docs/ENGINES.md) to install compatible native builds and their dependencies.
-
-On Windows, extract the full ZIP and open the root `RVZConverter.exe`. Keep `app/` beside the launcher. The published application runtime is under `app/`. Optional engine distributions can be placed in `tools/dolphin/` and `tools/wit/` beside the launcher. You can also locate installed engine executables in the application.
-
-On Linux, install the required system libraries, extract the tar.gz archive, and run the application executable. Linux requires glibc, X11 or XWayland, Fontconfig, and native .NET dependencies. On macOS, extract the ZIP and open the app bundle. The macOS packages are unsigned and not notarized. Gatekeeper or local security policy may block launch.
-
-The application uses system fonts with Tahoma and cross-platform fallbacks. Native dialogs and title bars follow the operating system language. See [platform requirements and limitations](docs/PLATFORMS.md) and [technical validation records](docs/VALIDATION.md). CI results do not validate every package or conversion route.
+Linux includes an optional user-level desktop entry installer in `docs/`. No root access is needed to run the application. See [platform installation instructions](docs/PLATFORMS.md).
 
 ## Build and test
 
-Install the .NET 10 SDK and PowerShell 7. From the repository directory, run:
+Install the .NET 10 SDK and PowerShell 7.
 
 ```powershell
 pwsh -File eng/build.ps1
@@ -74,12 +79,16 @@ pwsh -File eng/test.ps1
 pwsh -File eng/test.ps1 -WithEngines
 ```
 
-The native engine tests require DolphinTool and WIT installed on the build machine. They use synthetic data and do not download games. See [build and publishing instructions](docs/PLATFORMS.md).
+Native engine tests use generated non-game fixtures. They do not download games. See [native engine builds](docs/BUILD-ENGINES.md), [publishing](docs/PLATFORMS.md) and [technical validation records](docs/VALIDATION.md).
 
-## Limitations
+## Limitations and troubleshooting
 
-Validation checks process exit codes, container metadata and reopening by a compatible engine. It checks container readability. It is not full disc-integrity verification. Native engine support varies by platform and source format. FAT32 size limits and conservative space estimates can reject some jobs. Conversion logs contain local paths and engine output. Review logs before sharing them.
+Validation checks process exit codes, output size, signatures and container reopening. It does not perform complete disc-integrity verification. Synthetic tests do not establish real-game conversion results. Real-image conversion remains unverified.
+
+The application reports an engine failure if an engine opens an interactive error dialog on Windows. It never selects Ignore. See the [Dolphin assertion investigation](docs/ASSERTION-INVESTIGATION.md).
+
+Check the detailed log for missing libraries, unsupported routes or insufficient space. Conservative space checks can reject jobs. Logs contain local paths and engine output. Review them before sharing.
 
 ## Credits and licenses
 
-RVZ Converter is created by **Petrus-Canisius**. DolphinTool and WIT are independent projects with their own authors and licenses. Application dependency notices are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and `licenses/`. No application license is declared in this repository.
+RVZ Converter is created by **Petrus-Canisius**. DolphinTool and WIT are independent projects. Neither engine is created by Petrus-Canisius. See [third-party notices](THIRD-PARTY-NOTICES.md) and the package's license directory. No application license is declared in this repository.

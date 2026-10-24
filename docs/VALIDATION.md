@@ -1,5 +1,38 @@
 # Validation records
 
+## Application version 2.0.2
+
+The local Windows x64 build used .NET SDK 10.0.402 and MSVC 19.51.36260.0. The application build completed with no warnings or errors. The regression suite passed 81 tests. The engine build emitted upstream compiler and CMake warnings. These were not hidden.
+
+The corrected Windows x64 archive was extracted into a path containing spaces and Unicode. Its root launcher ran from another working directory with only Windows system directories on PATH. Bundled engine discovery, engine help commands, the requested RVZ preset and actual synthetic conversions passed. Both executable product names are RVZ Converter. Company metadata is Petrus-Canisius. Both file versions are 2.0.2.0.
+
+The package contains native DolphinTool 2506 and WIT 3.05a+rvz1. WIT uses Mbed TLS 2.28.0 SHA-1. A native known-answer test passed for empty input, `abc`, incremental `abc` and one million `a` bytes. The legacy SSLeay/OpenSSL SHA-1 and assembly objects are not linked. Dependency inspection found only the reviewed app-local Cygwin runtime and Windows system DLL requirements for WIT. DolphinTool uses the static Microsoft C++ runtime.
+
+Actual synthetic engine coverage includes ISO to RVZ and CISO, RVZ to ISO and CISO, GCZ and WIA to ISO, RVZ and CISO, and CISO to ISO and RVZ. There were fourteen conversion invocations across twelve distinct routes. ISO to RVZ to ISO preserved the generated ISO hash. CISO materialization used WIT's padded virtual length and the resulting ISO and RVZ metadata were checked. Each output passed container reopening checks.
+
+The raw unsupported Dolphin CISO to ISO call reproduced the exact line-44 assertion with the separately installed 2609a engine. The locally built 2506 engine reproduced the corresponding line-52 assertion. The process runner read the error dialog and stopped the engine without choosing Ignore. Both calls captured empty stdout and stderr and a forced termination exit code of -1. The synthetic CISO SHA256 before and after was `6c48406d330788dcbd359372100e75444ddc1e028b0384cb7dd4170c6309ccef`. No diagnostic output was accepted. See [the investigation](ASSERTION-INVESTIGATION.md).
+
+Collision refusal, coordinator cancellation, owned cleanup, source protection and queue continuation passed. A native process-tree test separately verified cancellation of a child and grandchild before returning. The assertion test exercised actual Dolphin termination. The package cancellation fixture cancels at the conversion transition. It is not a real-game cancellation test.
+
+The packaged Windows application opened native windows. Main, compact progress, error queue and About render captures were reviewed. Render fixtures cover 100, 125, 150 and 200 percent. These are render-scale checks, not four separate hardware display configurations. The indeterminate progress capture is explicitly a synthetic UI fixture.
+
+| Target | Current revised package | Native validation scope |
+| --- | --- | --- |
+| Windows x64 | Prepared and locally verified | Extracted package, both revised engines, synthetic routes and native UI passed |
+| Windows ARM64 | Not published for 2.0.2 | Revised package NOT RUN. Native WIT is unavailable |
+| Linux x64 | Not published for 2.0.2 | Revised Mbed TLS WIT package NOT RUN |
+| Linux ARM64 | Not published for 2.0.2 | Revised Mbed TLS WIT package NOT RUN |
+| macOS Intel | Not published for 2.0.2 | Revised Mbed TLS WIT package NOT RUN |
+| macOS Apple Silicon | Not published for 2.0.2 | Revised Mbed TLS WIT package NOT RUN |
+
+Historical native run [40069837264](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40069837264) passed application, engine, extracted-package and UI checks on Linux x64, Linux ARM64 and both macOS architectures. Those builds predate the revised WIT hash provider. They are not the 2.0.2 packages being distributed. Its Windows package checks failed because PowerShell did not wait for the GUI launcher and `$LASTEXITCODE` was unset. The package test now uses ProcessStartInfo, waits explicitly and checks the actual exit code. This correction passed locally on Windows x64.
+
+Run [40071642623](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40071642623) could not start any of its six jobs because hosted runner execution was blocked at account level. No build, engine or runtime result can be inferred from that run. The revised engines must be validated on the other native targets before their packages are published. No machine security or repository visibility setting was changed.
+
+No suitable real game image was available. Real-image conversion is NOT TESTED. WBFS integration with a Wii partition fixture and large split outputs is NOT TESTED. Regression tests cover Wii-only restrictions, split arguments, part collisions, missing parts, partial publication and disk-space checks. Container readability is not complete disc-integrity verification.
+
+The release archive audit checked the clean root, native architecture, engine manifest, executable metadata, required notices, source distribution and absence of game images, private logs, preferences and optional debug files. The source archives retain original third-party identifiers, copyright and license notices. No application license was added.
+
 ## Application version 2.0.0
 
 The local Windows x64 build used .NET SDK 10.0.402.
