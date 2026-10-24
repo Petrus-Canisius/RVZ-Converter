@@ -5,6 +5,14 @@
     "revision": "aed420c95d7a152363917e4b827d6cc85eacb502",
     "submodules": ["Externals/libusb/libusb", "Externals/spirv_cross/SPIRV-Cross", "Externals/SDL/SDL", "Externals/zlib-ng/zlib-ng", "Externals/libspng/libspng", "Externals/VulkanMemoryAllocator", "Externals/cubeb/cubeb", "Externals/implot/implot", "Externals/curl/curl", "Externals/fmt/fmt", "Externals/lz4/lz4", "Externals/xxhash/xxHash", "Externals/enet/enet", "Externals/hidapi/hidapi-src", "Externals/tinygltf/tinygltf", "Externals/minizip-ng/minizip-ng", "Externals/Vulkan-Headers", "Externals/SFML/SFML", "Externals/zstd/zstd"]
   },
+  "cygwin": {
+    "installerSha256": "2c9f2fb56e1fb687b5d9680afa8f8b06e6214f0e483096af0eae1946431226c5",
+    "packages": {
+      "cygwin": "3.6.11-1",
+      "libncurses-devel": "6.5+20240427-1",
+      "zlib-devel": "1.3.2-1"
+    }
+  },
   "wit": {
     "version": "3.05a+rvz1",
     "repository": "https://github.com/Wiimm/wiimms-iso-tools.git",

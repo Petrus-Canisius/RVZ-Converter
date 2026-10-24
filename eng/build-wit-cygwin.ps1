@@ -1,5 +1,8 @@
 param([string]$EngineRoot,[string]$SourceRoot,[string]$SourceAssets)
 . (Join-Path $PSScriptRoot 'common.ps1')
+$EngineRoot = Assert-ArtifactPath $(if ([IO.Path]::IsPathRooted($EngineRoot)) { $EngineRoot } else { Join-Path $ProjectRoot $EngineRoot })
+$SourceRoot = Assert-ArtifactPath $(if ([IO.Path]::IsPathRooted($SourceRoot)) { $SourceRoot } else { Join-Path $ProjectRoot $SourceRoot })
+$SourceAssets = Assert-ArtifactPath $(if ([IO.Path]::IsPathRooted($SourceAssets)) { $SourceAssets } else { Join-Path $ProjectRoot $SourceAssets })
 $root = Assert-ArtifactPath (Join-Path $ProjectRoot 'artifacts/cygwin')
 $downloads = Assert-ArtifactPath (Join-Path $ProjectRoot 'artifacts/cygwin-downloads')
 [IO.Directory]::CreateDirectory($downloads) | Out-Null
@@ -8,6 +11,8 @@ Invoke-WebRequest 'https://cygwin.com/setup-x86_64.exe' -OutFile $setup
 # Setup verifies the Cygwin mirror signature and package checksums. Do not disable
 # these checks. Its installer and downloaded repository metadata are recorded too.
 $setupHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($setup))).ToLowerInvariant()
+$pinned = (Get-Content -Raw (Join-Path $PSScriptRoot 'engines.lock.json') | ConvertFrom-Json).cygwin
+if ($setupHash -ne $pinned.installerSha256) { throw 'Cygwin installer differs from the reviewed lock file. Review and pin the new input before building.' }
 $site = 'https://mirrors.kernel.org/sourceware/cygwin/'
 $arguments = @('--quiet-mode','unattended','--no-admin','--no-desktop','--no-startmenu','--root',$root,'--local-package-dir',$downloads,'--site',$site,'--packages','gcc-core,make,binutils,gawk,libncurses-devel,zlib-devel,zstd')
 if (-not (Test-Path (Join-Path $root 'bin/bash.exe'))) {
@@ -15,6 +20,14 @@ if (-not (Test-Path (Join-Path $root 'bin/bash.exe'))) {
     if ($process.ExitCode -ne 0) { throw "Cygwin setup failed: $($process.ExitCode)" }
 }
 $bash = Join-Path $root 'bin/bash.exe'
+$installed = Get-Content (Join-Path $root 'etc/setup/installed.db')
+foreach ($property in $pinned.packages.PSObject.Properties) {
+    $expectedArchive = $property.Name + '-' + $property.Value
+    $line = @($installed | Where-Object { $_.StartsWith($property.Name + ' ') })
+    if ($line.Count -ne 1 -or ($line[0] -split ' ')[1] -notmatch ('^' + [regex]::Escape($expectedArchive) + '(-x86_64)?\.tar\.')) {
+        throw "Installed Cygwin dependency differs from the reviewed lock file: $($property.Name)."
+    }
+}
 $project = (Join-Path $SourceRoot 'wit/project').Replace('\','/')
 $drive = $project.Substring(0,1).ToLowerInvariant()
 $project = '/cygdrive/' + $drive + $project.Substring(2)

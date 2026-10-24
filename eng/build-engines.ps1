@@ -42,7 +42,9 @@ $cmakeArgs = @('-S',$dolphin,'-B',$build,'-G','Ninja','-DCMAKE_BUILD_TYPE=Releas
 if ($RuntimeIdentifier.StartsWith('win-')) {
     $processor = if ($RuntimeIdentifier.EndsWith('arm64')) { 'aarch64' } else { 'AMD64' }
     $cmakeArgs += @('-DCMAKE_SYSTEM_NAME=Windows',"-DCMAKE_SYSTEM_PROCESSOR=$processor",'-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded')
-    $cmakeArgs += @("-DCMAKE_C_FLAGS=/pathmap:$dolphin=.","-DCMAKE_CXX_FLAGS=/pathmap:$dolphin=.")
+    # Upstream's Ninja flag probe uses GCC's -Werror with MSVC and drops
+    # /EHsc. Enable the required C++ unwind semantics explicitly.
+    $cmakeArgs += @("-DCMAKE_C_FLAGS=/pathmap:$dolphin=.","-DCMAKE_CXX_FLAGS=/EHsc /pathmap:$dolphin=.")
 }
 else { $cmakeArgs += @("-DCMAKE_C_FLAGS=-ffile-prefix-map=$dolphin=.","-DCMAKE_CXX_FLAGS=-ffile-prefix-map=$dolphin=.") }
 if ($RuntimeIdentifier.StartsWith('osx-')) { $cmakeArgs += @('-DCMAKE_OSX_DEPLOYMENT_TARGET=14.0','-DMACOS_CODE_SIGNING=OFF','-DSKIP_POSTPROCESS_BUNDLE=ON','-DUSE_BUNDLED_MOLTENVK=OFF') }

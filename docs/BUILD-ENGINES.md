@@ -10,6 +10,8 @@ WIT uses its upstream Makefile. The build enables zlib and uses `-fcommon` for i
 
 Windows x64 builds WIT with an isolated Cygwin installation under `artifacts`. Setup runs without administrator privileges or shortcuts. Upstream repository signatures and package checksums are checked by Cygwin setup. The exact installed versions, installer hash, source URLs and SHA512 values are recorded in `INPUTS.json` inside the source asset. Matching Cygwin, ncurses and zlib source packages are included. Compiler runtime terms include the GCC Runtime Library Exception. Build tools are not shipped in user-facing packages.
 
+The reviewed Cygwin installer hash and redistributed dependency versions are pinned in `engines.lock.json`. A changed input stops the build for review. The Windows Dolphin build explicitly enables MSVC C++ unwind semantics with `/EHsc`. Warnings remain errors and assertions remain enabled.
+
 There is no supported native Cygwin ARM64 runtime. The WIT source's Windows branch requires Cygwin POSIX APIs. This is a platform porting blocker. Renaming an x64 binary or assuming emulation would not produce native ARM64 support.
 
 `EngineSources-<rid>.tar.gz` contains the exact preferred engine sources used for that target, selected recursive submodule sources, revision records and engine build materials. Extract it separately from the application. The sources can be built offline with the matching native compiler and the flags recorded in the included scripts. Dolphin's CMake supports building from a source tree without Git metadata. WIT's source package includes its upstream Makefile and bundled compression sources.
