@@ -51,7 +51,13 @@ public static class ImageInspector
                     throw new ConversionException("The Wii/GameCube CISO block map is invalid or incomplete.");
                 stream.Position = 0x8000; stream.ReadExactly(head);
                 // CISO carries no original length. Dolphin's reader exposes this conservative upper bound.
-                disc = FromHeader(head, checked((long)table.Length * block), stream.Length, false);
+                disc = FromHeader(head, checked((long)table.Length * block), stream.Length, false) with
+                {
+                    // WIT 3.05 SetupCISO/SetupReadCISO uses the last mapped
+                    // block and a single-layer Wii minimum. This is its
+                    // materialized ISO length, not the original disc length.
+                    WitIsoSize = Math.Max(checked((Array.FindLastIndex(table, value => value == 1) + 1L) * block), WbfsVirtualSize / 2)
+                };
             }
             else if (head.AsSpan(0, 4).SequenceEqual("WBFS"u8))
             {

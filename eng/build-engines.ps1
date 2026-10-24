@@ -54,7 +54,10 @@ if ($RuntimeIdentifier.StartsWith('osx-')) { $cmakeArgs += @('-DCMAKE_OSX_DEPLOY
 Invoke-CheckedNative 'cmake' $cmakeArgs
 Invoke-CheckedNative 'cmake' @('--build',$build,'--target','dolphin-tool','--parallel','2')
 $dolphinName = if ($RuntimeIdentifier.StartsWith('win-')) { 'dolphin-tool.exe' } else { 'dolphin-tool' }
-$builtDolphin = @(Get-ChildItem -LiteralPath $build -Recurse -File -Filter $dolphinName | Where-Object { $_.DirectoryName -notmatch 'CMakeFiles' })
+$binaryDirectory = if ($RuntimeIdentifier.StartsWith('win-')) {
+    Join-Path $dolphin $(if ($RuntimeIdentifier.EndsWith('arm64')) { 'Binary/ARM64' } else { 'Binary/x64' })
+} else { Join-Path $build 'Binaries' }
+$builtDolphin = @(Get-ChildItem -LiteralPath $binaryDirectory -Recurse -File -Filter $dolphinName | Where-Object { $_.DirectoryName -notmatch 'CMakeFiles' })
 if ($builtDolphin.Count -ne 1) { throw 'Expected exactly one compiled DolphinTool.' }
 $dolphinDest = Join-Path $tools ('dolphin/' + $(if ($RuntimeIdentifier.StartsWith('win-')) { 'DolphinTool.exe' } else { 'dolphin-tool' }))
 Copy-Item -LiteralPath $builtDolphin[0].FullName -Destination $dolphinDest

@@ -53,6 +53,7 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
             bool sameVolume = tempVolume.Id.Equals(outputVolume.Id, StringComparison.OrdinalIgnoreCase);
             var budget = DiskSpace.Calculate(image, route, sameVolume);
             log?.Invoke($"Source: {image.Format}, {image.Disc.Platform}, {image.Disc.GameId}. Disc size {(image.Disc.ExactSize ? "exact" : "upper bound")}: {Display.Bytes(image.Disc.IsoSize)}. Temporary budget: {Display.Bytes(budget.TemporaryBytes)}; destination budget: {Display.Bytes(budget.OutputBytes)}.");
+            if (image.Disc.WitIsoSize is { } witIsoSize) log?.Invoke($"WIT materialized ISO length: {witIsoSize} bytes. The original disc length remains unknown.");
             task = SafeFiles.CreateOwnedDirectory(temporary, "rvz-task-", owner);
             stage = SafeFiles.CreateOwnedDirectory(destination, ".rvz-stage-", owner);
             string current = Path.GetFullPath(source);
@@ -157,7 +158,8 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
     {
         if (!File.Exists(path)) throw new ConversionException("The engine did not create the expected ISO.");
         long length = new FileInfo(path).Length;
-        if (expected.ExactSize ? length != expected.IsoSize : length < 0x50000 || length > expected.IsoSize)
+        if ((expected.ExactSize ? length != expected.IsoSize : length < 0x50000 || length > expected.IsoSize) ||
+            (expected.WitIsoSize is { } witLength && length != witLength))
             throw new ConversionException($"The output ISO size ({length} bytes) is outside the source container's declared size/bound ({expected.IsoSize} bytes, {(expected.ExactSize ? "exact" : "upper bound")}).");
         var actual = ImageInspector.Read(path);
         if (actual.Format != ImageFormat.ISO || actual.Disc.Platform != expected.Platform || actual.Disc.GameId != expected.GameId)
@@ -183,7 +185,8 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
         {
             var rvz = ImageInspector.Read(primary);
             if (rvz.Format != ImageFormat.RVZ || rvz.Disc.Platform != expected.Platform || rvz.Disc.GameId != expected.GameId ||
-                (expected.ExactSize ? rvz.Disc.IsoSize != expected.IsoSize : rvz.Disc.IsoSize > expected.IsoSize))
+                (expected.ExactSize ? rvz.Disc.IsoSize != expected.IsoSize : rvz.Disc.IsoSize > expected.IsoSize) ||
+                (expected.WitIsoSize is { } witLength && rvz.Disc.IsoSize != witLength))
                 throw new ConversionException("The RVZ output metadata does not match the source.");
         }
         else

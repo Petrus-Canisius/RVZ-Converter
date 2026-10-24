@@ -32,6 +32,8 @@ WIT's CISO reader uses at least a single-layer Wii virtual length, including for
 
 CISO maps with a capacity below WIT's minimum padded ISO length are rejected before conversion. Otherwise WIT could write beyond the source bound used for disk budgeting. This is an unsupported source/engine combination, not a corruption diagnosis. Regression tests verify rejection, source protection, cleanup and continuation of the queue.
 
+Space budgets for WIT ISO materialization use `max(last mapped block end, single-layer Wii size)`. This matches `SetupCISO` and `SetupReadCISO` in the pinned WIT source. The full CISO map capacity remains the original reader's upper bound. It is not reported as an accurate original length. Intermediate ISO and RVZ metadata must match WIT's materialized length, and must also fit the source bound. This avoids budgeting unused map capacity twice without weakening output size validation.
+
 The inspected DolphinTool `convert --help` and command parser offer no documented batch or noninteractive error option. No guessed flag is used. Assertions and integrity checks remain enabled.
 
 The Windows process runner watches owned native error dialogs. It records their text, stops the engine and descendants, waits for termination and returns a conversion failure. It never clicks a response. Cancellation keeps its own cancelled status. stdout and stderr remain concurrently drained. Every stopped process has its exit code recorded. Cleanup remains limited to the current task's owned directories. Pre-existing destinations and source images are preserved.

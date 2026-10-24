@@ -69,6 +69,16 @@ jobs:
             artifacts/engines/${{ matrix.rid }}
             artifacts/sources/EngineSources-${{ matrix.rid }}.tar.gz
           key: ${{ steps.engine-cache.outputs.cache-primary-key }}
+      - name: Release owned engine build intermediates
+        # The verified engines and corresponding source asset are complete.
+        # Remove only this job's generated object directory before disk checks.
+        # Source trees, engine distributions and validation checks are retained.
+        shell: pwsh
+        run: |
+          . ./eng/common.ps1
+          $ownedBuild = Assert-ArtifactPath (Join-Path $ProjectRoot 'artifacts/engine-build/${{ matrix.rid }}/dolphin')
+          if (Test-Path -LiteralPath $ownedBuild) { Remove-Item -LiteralPath $ownedBuild -Recurse -Force }
+          Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free
       - name: Publish application archive
         shell: pwsh
         run: ./eng/publish.ps1 -RuntimeIdentifier '${{ matrix.rid }}' -SkipChecks

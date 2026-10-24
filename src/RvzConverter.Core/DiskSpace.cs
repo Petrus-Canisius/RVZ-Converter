@@ -69,12 +69,17 @@ public static class DiskSpace
     public const long WbfsPartSize = 4000L * 1024 * 1024; // 4,194,304,000 < 2^32
     public const long Reserve = 64L * 1024 * 1024;
 
+    public static long IsoBudget(ImageInfo image, ConversionPlan plan) => image.Format == ImageFormat.CISO &&
+        plan.Steps.Any(step => step.Engine == EngineKind.Wit && step.Format == OutputFormat.ISO)
+            ? image.Disc.WitIsoSize ?? image.Disc.IsoSize : image.Disc.IsoSize;
+
     public static SpacePlan Calculate(ImageInfo image, ConversionPlan plan, bool sameVolume)
     {
         checked
         {
-            long output = image.Disc.IsoSize + 2 * Reserve;
-            long temp = Reserve + (plan.CopySource ? image.Disc.SourceSize : 0) + (plan.IntermediateIso ? image.Disc.IsoSize : 0);
+            long iso = IsoBudget(image, plan);
+            long output = iso + 2 * Reserve;
+            long temp = Reserve + (plan.CopySource ? image.Disc.SourceSize : 0) + (plan.IntermediateIso ? iso : 0);
             if (plan.TemporaryOutput && !sameVolume) temp += output;
             return new(temp, output, temp + output);
         }
@@ -84,15 +89,16 @@ public static class DiskSpace
     {
         bool shared = temp.Id.Equals(output.Id, StringComparison.OrdinalIgnoreCase);
         var plan = Calculate(image, route, shared);
+        long iso = IsoBudget(image, route);
         bool outputFat = output.FileSystem.Equals("FAT32", StringComparison.OrdinalIgnoreCase);
         bool tempFat = temp.FileSystem.Equals("FAT32", StringComparison.OrdinalIgnoreCase);
-        if (outputFat && options.Format == OutputFormat.ISO && image.Disc.IsoSize > Fat32MaxFile)
+        if (outputFat && options.Format == OutputFormat.ISO && iso > Fat32MaxFile)
             throw new ConversionException("The ISO exceeds FAT32's 4 GiB minus 1 byte limit. Select NTFS/exFAT or split WBFS for Wii.");
         if (outputFat && options.Format is OutputFormat.CISO or OutputFormat.RVZ && plan.OutputBytes > Fat32MaxFile)
             throw new ConversionException("The potential unsplit output exceeds FAT32's file-size limit. Select NTFS/exFAT.");
         if (outputFat && options.Format == OutputFormat.WBFS && !options.SplitWbfs)
             throw new ConversionException("Enable WBFS splitting for FAT32 destinations.");
-        if (tempFat && route.IntermediateIso && image.Disc.IsoSize > Fat32MaxFile)
+        if (tempFat && route.IntermediateIso && iso > Fat32MaxFile)
             throw new ConversionException("The intermediate ISO exceeds the temporary volume's FAT32 limit.");
         if (tempFat && route.CopySource && image.Files.Any(f => new FileInfo(f).Length > Fat32MaxFile))
             throw new ConversionException("A source snapshot file exceeds the temporary volume's FAT32 limit.");

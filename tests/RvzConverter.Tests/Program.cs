@@ -61,6 +61,20 @@ internal static class Program
         Test("Malformed/truncated and PSP CISO rejected", () => { using var f = new Fixture(); foreach (var bytes in new[] { new byte[256], "RVZ\x01"u8.ToArray(), "CISO\x18\0\0\0"u8.ToArray() }) { string p = Path.Combine(f.Root, Guid.NewGuid().ToString()); File.WriteAllBytes(p, bytes); Assert.Throws<ConversionException>(() => ImageInspector.Read(p)); } });
         Test("RVZ header corruption rejected", () => { using var f = new Fixture(); string path = f.Source(); var data = File.ReadAllBytes(path); data[0x58] ^= 1; File.WriteAllBytes(path, data); Assert.Throws<ConversionException>(() => ImageInspector.Read(path)); });
         Test("CISO/WBFS lengths are labelled upper bounds", () => { using var f = new Fixture(); Assert.True(!ImageInspector.Read(f.Source(ImageFormat.CISO)).Disc.ExactSize); Assert.True(!ImageInspector.Read(f.Source(ImageFormat.WBFS)).Disc.ExactSize); });
+        Test("CISO WIT budgets use mapped extent and padding without claiming original length", () =>
+        {
+            using var f = new Fixture(); string source = f.Source(ImageFormat.CISO);
+            using (var file = File.OpenWrite(source)) { file.Position = 4; file.Write([0, 0, 32, 0]); file.SetLength(32768 + 2097152); }
+            var image = ImageInspector.Read(source); long minimum = ImageInspector.WbfsVirtualSize / 2;
+            Assert.Equal<long?>(minimum, image.Disc.WitIsoSize); Assert.True(!image.Disc.ExactSize && image.Disc.IsoSize > minimum);
+            var route = ConversionPlanner.Plan(ImageFormat.CISO, DiscPlatform.GameCube, OutputFormat.RVZ, true, true, true);
+            var budget = DiskSpace.Calculate(image, route, true);
+            Assert.Equal(minimum + image.Disc.SourceSize + DiskSpace.Reserve, budget.TemporaryBytes);
+            Assert.Equal(minimum + 2 * DiskSpace.Reserve, budget.OutputBytes);
+            Assert.Throws<ConversionException>(() => DiskSpace.Ensure(image, route, f.Options(OutputFormat.RVZ), new("a", "FAT32", long.MaxValue), new("b", "NTFS", long.MaxValue)));
+            using (var file = File.OpenWrite(source)) { file.Position = 8 + 6000; file.WriteByte(1); file.SetLength(32768 + 2 * 2097152); }
+            Assert.Equal<long?>(6001L * 2097152, ImageInspector.Read(source).Disc.WitIsoSize);
+        });
         foreach (var target in Enum.GetValues<OutputFormat>())
             Async($"Orchestration {target}: sources, Unicode, stages, validation and cleanup", async () =>
             {

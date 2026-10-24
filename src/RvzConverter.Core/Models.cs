@@ -5,7 +5,7 @@ public enum ImageFormat { ISO, RVZ, GCZ, WIA, CISO, WBFS }
 public enum EngineKind { Dolphin, Wit }
 public enum DiscPlatform { GameCube, Wii }
 public enum ConversionState { Pending, Inspecting, Converting, Validating, Publishing, Completed, Failed, Cancelled }
-public sealed record DiscInfo(DiscPlatform Platform, long IsoSize, long SourceSize, string Title, string GameId, bool ExactSize = true);
+public sealed record DiscInfo(DiscPlatform Platform, long IsoSize, long SourceSize, string Title, string GameId, bool ExactSize = true, long? WitIsoSize = null);
 public sealed record ImageInfo(ImageFormat Format, DiscInfo Disc, IReadOnlyList<string> Files);
 public sealed record ConversionOptions(string Destination, string TemporaryDirectory, OutputFormat Format,
     bool SplitWbfs, string DolphinPath, string WitPath);
