@@ -5,8 +5,9 @@ Optional Windows PDB generation is removed. MSVC C++ unwind semantics are
 explicitly enabled for the Ninja build. Conversion assertions remain enabled.
 
 WIT 3.05a+rvz1 uses source revision fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58.
-The GCZ reader accepts standard GameCube subtype 0. OPENSSL_NO_ASM selects
-portable SHA-1 in the Windows build. macOS uses classic linker relocations
+The GCZ reader accepts standard GameCube subtype 0. Mbed TLS 2.28.0 provides
+SHA-1 through a compatibility adapter. The legacy SSLeay/OpenSSL fallback
+and its assembly objects are excluded from linking. macOS uses classic linker relocations
 for upstream packed pointer tables. The build materials record all flags.
 
 Original engine authorship is unchanged. These modifications do not attribute

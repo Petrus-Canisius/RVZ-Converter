@@ -85,8 +85,12 @@ foreach ($file in Get-ChildItem (Join-Path $sourceRoot 'wit/project') -Recurse -
     [IO.Directory]::CreateDirectory((Split-Path $dest)) | Out-Null
     Copy-Item -LiteralPath $file.FullName -Destination $dest
 }
+$rijndael = [IO.File]::ReadAllText((Join-Path $sourceRoot 'wit/project/src/libwbfs/rijndael.c'))
+$rijndaelNotice = [regex]::Match($rijndael,'(?s)\A/\*.*?\*/').Value
+if (-not $rijndaelNotice.Contains('Mike Scott')) { throw 'The Rijndael source notice needs review.' }
+[IO.File]::WriteAllText((Join-Path $notices 'WIT-Rijndael-NOTICE.txt'),$rijndaelNotice)
 $patchRecords = @(Get-ChildItem (Join-Path $PSScriptRoot 'patches') -File | ForEach-Object { @{name=$_.Name;sha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($_.FullName))).ToLowerInvariant()} })
-$manifest = @{ runtime=$RuntimeIdentifier; dolphin=@{version=$lock.dolphin.version; revision=$lock.dolphin.revision}; wit=@{version=$lock.wit.version; revision=$lock.wit.revision; available=$witAvailable}; patches=$patchRecords; sourceAssets=@("EngineSources-$RuntimeIdentifier.tar.gz"); redistribution='Separate processes. Engine GPL licenses do not assign the application a license.' }
+$manifest = @{ runtime=$RuntimeIdentifier; dolphin=@{version=$lock.dolphin.version; revision=$lock.dolphin.revision}; wit=@{version=$lock.wit.version; revision=$lock.wit.revision; available=$witAvailable; sha1Provider=$lock.wit.sha1Provider}; patches=$patchRecords; sourceAssets=@("EngineSources-$RuntimeIdentifier.tar.gz"); redistribution='Separate processes. Engine GPL licenses do not assign the application a license.' }
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $tools 'engines.json') -Encoding utf8
 if ($RuntimeIdentifier.StartsWith('linux-')) { Invoke-CheckedNative 'bash' @((Join-Path $PSScriptRoot 'inspect-linux-engines.sh'),$engineRoot,$sourceAssets) }
 if ($RuntimeIdentifier.StartsWith('osx-')) { Invoke-CheckedNative 'bash' @((Join-Path $PSScriptRoot 'inspect-macos-engines.sh'),$engineRoot) }
@@ -102,7 +106,7 @@ if ($witAvailable) { $witName = if ($RuntimeIdentifier.StartsWith('win-')) { 'wi
 # Corresponding source is shipped as a release asset, with exact submodules and build scripts.
 $material = Join-Path $sourceAssets "material-$RuntimeIdentifier"
 [IO.Directory]::CreateDirectory($material) | Out-Null
-foreach ($relative in (& git -C $ProjectRoot ls-files eng docs/BUILD-ENGINES.md licenses/engines | Where-Object { $_ -match '^eng/(build-engines\.ps1|build-wit-|inspect-|common\.ps1|engines\.lock\.json|patches/)|^docs/BUILD-ENGINES\.md$|^licenses/engines/' })) {
+foreach ($relative in (& git -C $ProjectRoot ls-files eng docs/BUILD-ENGINES.md licenses/engines | Where-Object { $_ -match '^eng/(build-engines\.ps1|build-wit-|prepare-wit-|wit-sha1|inspect-|common\.ps1|engines\.lock\.json|patches/)|^docs/BUILD-ENGINES\.md$|^licenses/engines/' })) {
     $dest = Join-Path $material $relative
     [IO.Directory]::CreateDirectory((Split-Path $dest)) | Out-Null
     Copy-Item -LiteralPath (Join-Path $ProjectRoot $relative) -Destination $dest
@@ -110,5 +114,5 @@ foreach ($relative in (& git -C $ProjectRoot ls-files eng docs/BUILD-ENGINES.md 
 $lock | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $material 'SOURCE-REVISIONS.json') -Encoding utf8
 & git -C $dolphin submodule status --recursive | Set-Content (Join-Path $material 'Dolphin-submodules.txt')
 if ($LASTEXITCODE -ne 0) { throw 'Cannot record source submodules.' }
-Invoke-CheckedNative 'tar' @('--exclude=.git','--exclude=build','--exclude=bin','--exclude=obj','--exclude=.build-tools','--exclude=wit/project/wit','--exclude=*.o','--exclude=*.d','--exclude=*.exe','--exclude=*.iso','--exclude=*.rvz','--exclude=*.gcz','--exclude=*.wia','--exclude=*.ciso','--exclude=*.wbfs','-czf',(Join-Path $sourceAssets "EngineSources-$RuntimeIdentifier.tar.gz"),'-C',$sourceRoot,'dolphin','wit','-C',$material,'.')
+Invoke-CheckedNative 'tar' @('--exclude=.git','--exclude=build','--exclude=bin','--exclude=obj','--exclude=.build-tools','--exclude=wit/project/wit','--exclude=wit/project/gen-ui','--exclude=wit/project/rvz-sha1-selftest','--exclude=*.a','--exclude=*.pdb','--exclude=*.o','--exclude=*.d','--exclude=*.exe','--exclude=*.iso','--exclude=*.rvz','--exclude=*.gcz','--exclude=*.wia','--exclude=*.ciso','--exclude=*.wbfs','-czf',(Join-Path $sourceAssets "EngineSources-$RuntimeIdentifier.tar.gz"),'-C',$sourceRoot,'dolphin','wit','-C',$material,'.')
 Write-Host "Built native engine distribution: $engineRoot"

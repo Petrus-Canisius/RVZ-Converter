@@ -1,0 +1,46 @@
+diff --git a/project/Makefile b/project/Makefile
+--- a/project/Makefile
++++ b/project/Makefile
+@@ -266,5 +266,11 @@
+ ASM_OBJECTS	:= ssl-asm.o
+ 
++ifeq ($(RVZ_MBEDTLS),1)
++WIT_O := $(filter-out sha1dgst.o sha1_one.o,$(WIT_O)) rvz-sha1.o sha1.o platform_util.o
++C_OBJECTS := $(filter-out sha1dgst.o sha1_one.o,$(C_OBJECTS)) rvz-sha1.o sha1.o platform_util.o
++ASM_OBJECTS :=
++endif
++
+ # all objects + sources
+ #ALL_OBJECTS	= $(sort $(WIT_O) $(LIBWBFS_O) $(LZMA_O) $(ASM_OBJECTS) $(LIB_OBJECTS))
+ ALL_OBJECTS	= $(sort $(WIT_O) $(LIBWBFS_O) $(ASM_OBJECTS) $(LIB_OBJECTS))
+@@ -286,6 +292,12 @@
+ VPATH		+= src src/libwbfs src/crypto $(UI) work
+ DIR_LIST	+= src src/libwbfs src/crypto $(UI) work
+ 
++ifeq ($(RVZ_MBEDTLS),1)
++VPATH += rvz-mbedtls/library
++CFLAGS += -Irvz-mbedtls/include
++DEFINES1 += -DRVZ_MBEDTLS_SHA1 -DMBEDTLS_CONFIG_FILE=\"crypto/rvz-sha1-config.h\"
++endif
++
+ DEFINES1	+= -DLARGE_FILES -D_FILE_OFFSET_BITS=64
+ DEFINES1	+= -DWIT		# compile wit tools (for shared sources (e.g. libwbfs))
+ DEFINES1	+= -DDEBUG_ASSERT	# enable ASSERTions in release version too
+diff --git a/project/src/crypt.h b/project/src/crypt.h
+--- a/project/src/crypt.h
++++ b/project/src/crypt.h
+@@ -38,7 +38,13 @@
+ #ifndef WIIMM_CRYPT_H
+ #define WIIMM_CRYPT_H 1
+ 
+-#ifdef USE_SHA_LIB
++#ifdef RVZ_MBEDTLS_SHA1
++  #include "crypto/rvz-sha1.h"
++  #define SHA1 RVZ_SHA1
++  #define SHA1_Init RVZ_SHA1_Init
++  #define SHA1_Update RVZ_SHA1_Update
++  #define SHA1_Final RVZ_SHA1_Final
++#elif defined(USE_SHA_LIB)
+   #include <openssl/sha.h>
+ #else
+   #include "crypto/wiimm-sha.h"

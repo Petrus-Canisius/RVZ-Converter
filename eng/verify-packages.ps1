@@ -26,6 +26,7 @@ foreach ($rid in @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','os
             $reader = [IO.StreamReader]::new($entry.Open()); try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
             if ($manifest.runtime -ne $rid) { throw "Engine target mismatch: $rid" }
             if ($manifest.wit.available -ne ($rid -ne 'win-arm64')) { throw "Unexpected WIT availability: $rid" }
+            if ($manifest.wit.available -and $manifest.wit.sha1Provider -notlike 'Mbed TLS 2.28.0*') { throw "Stale WIT provider: $rid" }
         } finally { $zip.Dispose() }
     } else {
         $listing = & tar -tf $archive
@@ -35,11 +36,15 @@ foreach ($rid in @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','os
         foreach ($required in @('GPL-3.0.txt','ENGINE-MODIFICATIONS.txt','GCC-Runtime-Exception-3.1.txt')) {
             if ($listing -notcontains ('licenses/engines/' + $required)) { throw "Required distribution notice missing: $rid/$required" }
         }
+        $manifestText = & tar -xOf $archive 'tools/engines.json'
+        if ($LASTEXITCODE -ne 0) { throw "Engine manifest missing: $rid" }
+        $manifest = ($manifestText -join "`n") | ConvertFrom-Json
+        if ($manifest.runtime -ne $rid -or -not $manifest.wit.available -or $manifest.wit.sha1Provider -notlike 'Mbed TLS 2.28.0*') { throw "Stale or incompatible engine manifest: $rid" }
         $modes = & tar -tvf $archive
         if ($LASTEXITCODE -ne 0 -or -not ($modes | Where-Object { $_ -match '^-rwxr-xr-x .* RVZConverter$' })) { throw "Executable root entry missing: $rid" }
     }
     $sourceListing = & tar -tf $source
     if ($LASTEXITCODE -ne 0 -or -not ($sourceListing | Where-Object { $_ -eq 'dolphin/COPYING' }) -or -not ($sourceListing | Where-Object { $_ -eq 'wit/project/gpl-2.0.txt' })) { throw "Incomplete engine source: $rid" }
-    if ($sourceListing | Where-Object { $_ -match '(^|/)\.git(/|$)|(^|/)(bin|obj)/|\.(iso|rvz|gcz|wia|ciso|wbfs)$' }) { throw "Private metadata, build output or disc fixture in source asset: $rid" }
+    if ($sourceListing | Where-Object { $_ -match '(^|/)\.git(/|$)|(^|/)(bin|obj)/|wit/project/(gen-ui|rvz-sha1-selftest)$|\.(iso|rvz|gcz|wia|ciso|wbfs|exe|dll|so|dylib|pdb|a|o)$' }) { throw "Private metadata, build output or disc fixture in source asset: $rid" }
     Write-Host "Verified clean $rid layout, engine manifest and corresponding source."
 }

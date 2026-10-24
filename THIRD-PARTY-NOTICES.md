@@ -13,6 +13,10 @@ Each package records its engine versions in `tools/engines.json`. Engine GPL tex
 
 Dolphin's bundled library sources and their notices are preserved. These include compression libraries, fmt, libusb, mbedTLS, curl and the other upstream build dependencies. Linux system ABI libraries and macOS system frameworks are not redistributed. See `docs/PLATFORMS.md` for system prerequisites. No engine is downloaded at application startup.
 
+WIT uses **Mbed TLS 2.28.0 SHA-1**, by the Mbed TLS contributors, under **Apache-2.0**. The exact source is vendored in the pinned Dolphin revision. Its license is included under WIT dependency notices. A compatibility adapter is distributed under the engine's GPL-2.0-or-later terms. The combined engine uses the GPL version 3 option. The legacy SSLeay/OpenSSL SHA-1 implementation and assembly are excluded from linked objects. Their original source notices remain in the separate source archive. This avoids relying on an unprovided license exception. See the [GNU license compatibility reference](https://www.gnu.org/licenses/license-list.html#OpenSSL) and the included source/build materials.
+
+WIT's Rijndael code is by Mike Scott. Its original permission notice is preserved in `WIT-Rijndael-NOTICE.txt`. Bundled bzip2, LZMA, ncurses, zlib and Cygwin notices and corresponding sources remain intact.
+
 ## Bundled application dependencies
 
 - **Avalonia 11.3.22** and platform backends, AvaloniaUI contributors / AvaloniaUI OÜ, **MIT**. [Pinned release](https://github.com/AvaloniaUI/Avalonia/releases/tag/11.3.22), [license](https://github.com/AvaloniaUI/Avalonia/blob/11.3.22/licence.md). `licenses/Avalonia-LICENSE.txt` contains the notice.

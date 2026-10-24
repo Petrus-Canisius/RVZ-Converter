@@ -2,7 +2,7 @@
 
 RVZ Converter is created by Petrus-Canisius. DolphinTool is by the Dolphin Emulator project contributors. WIT is by Wiimm and contributors. The engines run as separate processes.
 
-The packages include DolphinTool 2506 from revision `aed420c95d7a152363917e4b827d6cc85eacb502`. They include WIT 3.05a from revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`, with the `rvz1` compatibility patches. These recognize Dolphin GameCube GCZ subtype 0 as an ordinary GCZ and select portable SHA-1 for the Windows source build. Upstream WIT treats GCZ subtype 0 as NKit. Its unused Cygwin SHA-1 assembly uses an incompatible calling convention when built without external OpenSSL. The binary VERSION command reports the upstream base version. `tools/engines.json` identifies this patched distribution.
+The packages include DolphinTool 2506 from revision `aed420c95d7a152363917e4b827d6cc85eacb502`. They include WIT 3.05a from revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`, with the `rvz1` compatibility patches. These recognize Dolphin GameCube GCZ subtype 0 as an ordinary GCZ. Mbed TLS 2.28.0 supplies SHA-1 on every WIT target. Its source is vendored by the pinned Dolphin revision and licensed under Apache-2.0. Legacy SSLeay/OpenSSL SHA-1 objects and assembly are not linked. The binary VERSION command reports the upstream base version. `tools/engines.json` identifies this patched distribution.
 
 Windows ARM64 includes DolphinTool only. WIT's Windows source depends on POSIX APIs provided by Cygwin. Cygwin supports x64 and x64 emulation on Windows ARM64. It does not provide a native ARM64 runtime. This application does not enable emulation. CISO and WBFS outputs remain disabled in that package. It is not a complete engine package.
 

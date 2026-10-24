@@ -1,9 +1,0 @@
-diff --git a/project/src/crypto/ssl-asm.h b/project/src/crypto/ssl-asm.h
---- a/project/src/crypto/ssl-asm.h
-+++ b/project/src/crypto/ssl-asm.h
-@@ -38,4 +38,4 @@
--#ifndef USE_SHA_LIB
-+#if !defined(USE_SHA_LIB) && !defined(OPENSSL_NO_ASM)
-  #ifdef __CYGWIN__
-     #define SHA1_ASM
-     #ifdef WIIMM_INCLUDE_SSL_ASM

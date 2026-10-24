@@ -18,6 +18,9 @@ Validate(Path.Combine(source, appExecutable));
 using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(engines, "tools", "engines.json")));
 if (manifest.RootElement.GetProperty("runtime").GetString() != rid) throw new Exception("Engine distribution target mismatch.");
 bool witAvailable = manifest.RootElement.GetProperty("wit").GetProperty("available").GetBoolean();
+if (witAvailable && (!manifest.RootElement.GetProperty("wit").TryGetProperty("sha1Provider", out var sha1Provider) ||
+    !sha1Provider.GetString()!.StartsWith("Mbed TLS 2.28.0", StringComparison.Ordinal)))
+    throw new Exception("The WIT distribution must be rebuilt with the reviewed Mbed TLS SHA-1 provider.");
 Validate(Path.Combine(engines, "tools", "dolphin", platform == DesktopPlatform.Windows ? "DolphinTool.exe" : "dolphin-tool"));
 if (witAvailable) Validate(Path.Combine(engines, "tools", "wit", platform == DesktopPlatform.Windows ? "wit.exe" : "wit"));
 foreach (string file in Directory.EnumerateFiles(Path.Combine(engines, "tools"), "*", SearchOption.AllDirectories)

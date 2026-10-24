@@ -31,7 +31,9 @@ foreach ($property in $pinned.packages.PSObject.Properties) {
 $project = (Join-Path $SourceRoot 'wit/project').Replace('\','/')
 $drive = $project.Substring(0,1).ToLowerInvariant()
 $project = '/cygdrive/' + $drive + $project.Substring(2)
-Invoke-CheckedNative $bash @('--noprofile','--norc','-c',"export PATH=/usr/bin:/bin; cd '$project'; NO_FUSE=1 STATIC=1 make -j3 wit HAVE_SHA=0 HAVE_MD5=0 XDEF=-DOPENSSL_NO_ASM XFLAGS='-fcommon -ffile-prefix-map=$project=.'")
+& (Join-Path $PSScriptRoot 'prepare-wit-sha1.ps1') -SourceRoot $SourceRoot
+Invoke-CheckedNative $bash @('--noprofile','--norc','-c',"export PATH=/usr/bin:/bin; cd '$project'; NO_FUSE=1 STATIC=1 make -j3 wit RVZ_MBEDTLS=1 HAVE_SHA=0 HAVE_MD5=0 XFLAGS='-fcommon -ffile-prefix-map=$project=.'")
+Invoke-CheckedNative $bash @('--noprofile','--norc','-c',('export PATH=/usr/bin:/bin; cd ''' + $project + '''; gcc -std=gnu99 -Isrc -Irvz-mbedtls/include -DMBEDTLS_CONFIG_FILE=\"crypto/rvz-sha1-config.h\" rvz-sha1-selftest.c src/rvz-sha1.c rvz-mbedtls/library/sha1.c rvz-mbedtls/library/platform_util.c -o rvz-sha1-selftest.exe && ./rvz-sha1-selftest.exe'))
 $destination = Join-Path $EngineRoot 'tools/wit'
 Copy-Item -LiteralPath (Join-Path $SourceRoot 'wit/project/wit.exe') -Destination (Join-Path $destination 'wit.exe')
 Copy-Item -LiteralPath (Join-Path $root 'bin/cygwin1.dll') -Destination (Join-Path $destination 'cygwin1.dll')

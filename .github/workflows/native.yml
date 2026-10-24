@@ -56,7 +56,7 @@ jobs:
           path: |
             artifacts/engines/${{ matrix.rid }}
             artifacts/sources/EngineSources-${{ matrix.rid }}.tar.gz
-          key: engines-v1-${{ matrix.rid }}-${{ hashFiles('eng/engines.lock.json', 'eng/build-engines.ps1', 'eng/build-wit*', 'eng/inspect-*', 'eng/patches/*') }}
+          key: engines-v1-${{ matrix.rid }}-${{ hashFiles('eng/engines.lock.json', 'eng/build-engines.ps1', 'eng/build-wit*', 'eng/prepare-wit*', 'eng/wit-sha1*', 'eng/inspect-*', 'eng/patches/*', 'licenses/engines/*') }}
       - name: Build native conversion engines
         if: steps.engine-cache.outputs.cache-hit != 'true'
         shell: pwsh
