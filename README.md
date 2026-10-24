@@ -4,20 +4,22 @@ RVZ Converter converts Wii and GameCube disc images. Created by **Petrus-Canisiu
 
 ## Downloads
 
-Version 2.0.2 currently provides the corrected Windows x64 package. Extract the complete archive before launching. The application includes its .NET runtime and conversion engines.
+Version 2.0.2 provides five complete native distributions. Extract the complete archive before launching. The application includes its .NET runtime, DolphinTool and WIT; no development environment is required.
 
 | Operating system | Architecture | Download |
 | --- | --- | --- |
 | Windows | x64 | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-win-x64.zip) |
-| Windows | ARM64 | [Earlier 2.0.1 ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.1/RVZConverter-win-arm64.zip) |
-| Linux | x64 | Pending native package |
-| Linux | ARM64 | Pending native package |
-| macOS | Intel | Pending native package |
-| macOS | Apple Silicon | Pending native package |
+| Windows | ARM64 | Withheld: native WIT is missing |
+| Linux | x64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-linux-x64.tar.gz) |
+| Linux | ARM64 | [tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-linux-arm64.tar.gz) |
+| macOS | Intel | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-osx-x64.zip) |
+| macOS | Apple Silicon | [ZIP](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/RVZConverter-osx-arm64.zip) |
 
 [Release notes](https://github.com/Petrus-Canisius/RVZ-Converter/releases/tag/v2.0.2) and [SHA256 checksums](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/SHA256SUMS.txt).
 
-The earlier Windows ARM64 download has no bundled engines and does not include the 2.0.2 assertion fix. Other new packages are held pending validation of the revised engines. Hosted native CI is temporarily unavailable. See [technical validation records](docs/VALIDATION.md).
+All six native CI jobs passed in [run 40076853202](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40076853202). Windows ARM64 passed only its DolphinTool routes and is not a complete distribution. Its CI artifact is withheld from this release. Older releases remain available in the release history. See the [final validation report](docs/FINAL-VALIDATION-2.0.2.md).
+
+Verify the archive's SHA-256 before extraction; commands and system prerequisites are in the [installation guide](docs/PLATFORMS.md). Archive documentation preserves the release commit's original snapshot. The online report records the later validation and distribution audit.
 
 Windows ARM64 source builds can include native DolphinTool but no native WIT. CISO and WBFS output require WIT. CISO and WBFS input also require WIT for ISO or RVZ output. No emulated engine is bundled.
 
@@ -54,12 +56,12 @@ The table describes implemented support. It does not establish real-image verifi
 
 ## Included engines
 
-- **DolphinTool 2506**, source revision `aed420c95d7a152363917e4b827d6cc85eacb502`. Bundled in the Windows x64 2.0.2 package.
-- **WIT 3.05a+rvz1**, based on source revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`. Bundled in the Windows x64 2.0.2 package. It includes a GameCube GCZ correction and the Apache-licensed Mbed TLS 2.28.0 SHA-1 provider.
+- **DolphinTool 2506**, source revision `aed420c95d7a152363917e4b827d6cc85eacb502`. Bundled in all five published packages.
+- **WIT 3.05a+rvz1**, based on source revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`. Bundled in all five published packages. It includes a GameCube GCZ correction and the Apache-licensed Mbed TLS 2.28.0 SHA-1 provider.
 
 Engines run as separate processes. Nothing is downloaded at application startup. External native engines remain available through Locate. Keep their dependencies with them. See [engine details](docs/ENGINES.md) and [source build instructions](docs/BUILD-ENGINES.md).
 
-The [EngineSources-win-x64.tar.gz](https://github.com/Petrus-Canisius/RVZ-Converter/releases/download/v2.0.2/EngineSources-win-x64.tar.gz) asset contains corresponding engine sources and build materials. License texts and dependency notices are included in the package. Engine authorship belongs to the Dolphin Emulator project, Wiimm and their contributors. Source code and publishing recipes cover all six target architectures. Their revised engine packages still require native validation.
+Each `EngineSources-<rid>.tar.gz` release asset contains the corresponding engine sources, pinned dependencies and build materials for its matching application archive. License texts and dependency notices are included in the application package. Engine authorship belongs to the Dolphin Emulator project, Wiimm and their contributors.
 
 ## Platform requirements
 
@@ -83,7 +85,7 @@ Native engine tests use generated non-game fixtures. They do not download games.
 
 ## Limitations and troubleshooting
 
-Validation checks process exit codes, output size, signatures and container reopening. It does not perform complete disc-integrity verification. Synthetic tests do not establish real-game conversion results. Real-image conversion remains unverified.
+The application checks process exit codes, output size, signatures and container reopening. It does not perform complete disc-integrity verification. Separate Windows x64 validation used one Wii image and one GameCube image, checked byte-identical ISO/RVZ round trips and ran Wii partition verification. Other architectures used generated non-game fixtures. These results do not establish compatibility with all Wii games. Large split WBFS outputs and installation on clean operating systems without development tools remain untested. See the [precise test scope](docs/FINAL-VALIDATION-2.0.2.md).
 
 The application reports an engine failure if an engine opens an interactive error dialog on Windows. It never selects Ignore. See the [Dolphin assertion investigation](docs/ASSERTION-INVESTIGATION.md).
 

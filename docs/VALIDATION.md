@@ -1,5 +1,9 @@
 # Validation records
 
+## Final distribution audit, 24 October 2026
+
+The [final 2.0.2 report](FINAL-VALIDATION-2.0.2.md) supersedes the pending-publication statements below. Run [40076853202](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40076853202) passed all six native jobs at the unchanged release commit `cb5809e84f4df1965db0d9c0bad9f935a66343b1`. Five targets have both engines. Windows ARM64 has no native WIT and remains withheld. Real Wii and GameCube image tests were subsequently executed locally on Windows x64. The historical records below describe the earlier evidence available when written.
+
 ## Application version 2.0.2
 
 The local Windows x64 build used .NET SDK 10.0.402 and MSVC 19.51.36260.0. The application build completed with no warnings or errors. The regression suite passed 81 tests. The engine build emitted upstream compiler and CMake warnings. These were not hidden.

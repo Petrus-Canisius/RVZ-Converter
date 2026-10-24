@@ -2,7 +2,7 @@
 
 RVZ Converter is created by Petrus-Canisius. DolphinTool is by the Dolphin Emulator project contributors. WIT is by Wiimm and contributors. The engines run as separate processes.
 
-Release 2.0.2 currently publishes Windows x64. Other revised native engine packages are pending validation. The six-target recipes below describe the source build configuration. They do not establish availability of unpublished release assets.
+Release 2.0.2 publishes Windows x64, Linux x64/ARM64 and macOS Intel/Apple Silicon with both native engines. The Windows ARM64 CI artifact contains DolphinTool only and is withheld from the release. See the [final validation report](FINAL-VALIDATION-2.0.2.md).
 
 The packages include DolphinTool 2506 from revision `aed420c95d7a152363917e4b827d6cc85eacb502`. They include WIT 3.05a from revision `fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58`, with the `rvz1` compatibility patches. These recognize Dolphin GameCube GCZ subtype 0 as an ordinary GCZ. Mbed TLS 2.28.0 supplies SHA-1 on every WIT target. Its source is vendored by the pinned Dolphin revision and licensed under Apache-2.0. Legacy SSLeay/OpenSSL SHA-1 objects and assembly are not linked. The binary VERSION command reports the upstream base version. `tools/engines.json` identifies this patched distribution.
 

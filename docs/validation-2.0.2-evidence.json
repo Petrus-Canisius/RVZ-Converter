@@ -1,0 +1,740 @@
+{
+  "release": "v2.0.2",
+  "release_commit": "cb5809e84f4df1965db0d9c0bad9f935a66343b1",
+  "build_run": 40076853202,
+  "ci_artifact_audit": [
+    {
+      "rid": "win-x64",
+      "package": "RVZConverter-win-x64.zip",
+      "sha256": "389d99cd2e40f03e7f74311e9a006ce8472c1be1dac4f6d49998eb4e0dd89208",
+      "source_sha256": "acf62279fba7f4cfdef3a82898abbb2ee69454e0b735c1c9e8fd67124dc02d19",
+      "entries": 427,
+      "native_architecture": "0x8664",
+      "wit_available": true,
+      "complete": true,
+      "manifest": {
+        "sourceAssets": [
+          "EngineSources-win-x64.tar.gz"
+        ],
+        "dolphin": {
+          "version": "2506",
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502"
+        },
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "wit": {
+          "available": true,
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58",
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "version": "3.05a+rvz1"
+        },
+        "runtime": "win-x64",
+        "patches": [
+          {
+            "name": "dolphin-no-debug-paths.patch",
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10"
+          },
+          {
+            "name": "wit-gcz-subtype.patch",
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882"
+          },
+          {
+            "name": "wit-mbedtls-sha1.patch",
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0"
+          }
+        ]
+      }
+    },
+    {
+      "rid": "win-arm64",
+      "package": "RVZConverter-win-arm64.zip",
+      "sha256": "759e08e714b8d65bda1d2053abcef4d39113816c54e93c8360f18686b5472071",
+      "source_sha256": "95f2dbf5f5eea7b630761c52387c919e91c282e440e677c25ef0f18b7397b9ad",
+      "entries": 364,
+      "native_architecture": "0xaa64",
+      "wit_available": false,
+      "complete": false,
+      "manifest": {
+        "dolphin": {
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502",
+          "version": "2506"
+        },
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "runtime": "win-arm64",
+        "wit": {
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "version": "3.05a+rvz1",
+          "available": false,
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58"
+        },
+        "sourceAssets": [
+          "EngineSources-win-arm64.tar.gz"
+        ],
+        "patches": [
+          {
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10",
+            "name": "dolphin-no-debug-paths.patch"
+          },
+          {
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882",
+            "name": "wit-gcz-subtype.patch"
+          },
+          {
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0",
+            "name": "wit-mbedtls-sha1.patch"
+          }
+        ]
+      }
+    },
+    {
+      "rid": "linux-x64",
+      "package": "RVZConverter-linux-x64.tar.gz",
+      "sha256": "5dde101f5e5863f4bed2863e20e6de28345dcc5ae1e34cde8716b2cceef71e39",
+      "source_sha256": "7886c2af17e8793cfbd04191fc71c18d4f67316bff343b431faf969b9df17801",
+      "entries": 364,
+      "native_architecture": "0x3e",
+      "wit_available": true,
+      "complete": true,
+      "manifest": {
+        "sourceAssets": [
+          "EngineSources-linux-x64.tar.gz"
+        ],
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "dolphin": {
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502",
+          "version": "2506"
+        },
+        "wit": {
+          "available": true,
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58",
+          "version": "3.05a+rvz1"
+        },
+        "runtime": "linux-x64",
+        "patches": [
+          {
+            "name": "dolphin-no-debug-paths.patch",
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10"
+          },
+          {
+            "name": "wit-gcz-subtype.patch",
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882"
+          },
+          {
+            "name": "wit-mbedtls-sha1.patch",
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0"
+          }
+        ]
+      }
+    },
+    {
+      "rid": "linux-arm64",
+      "package": "RVZConverter-linux-arm64.tar.gz",
+      "sha256": "fd80ddd9086e28e067d1b84416e6f6b5a914fce9eb5f8860e0ccfd088360074f",
+      "source_sha256": "519124cf3e2615db9518e79ea512f6a543195b4f107be5d88ad67946dcdaa31e",
+      "entries": 364,
+      "native_architecture": "0xb7",
+      "wit_available": true,
+      "complete": true,
+      "manifest": {
+        "runtime": "linux-arm64",
+        "wit": {
+          "version": "3.05a+rvz1",
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "available": true,
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58"
+        },
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "patches": [
+          {
+            "name": "dolphin-no-debug-paths.patch",
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10"
+          },
+          {
+            "name": "wit-gcz-subtype.patch",
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882"
+          },
+          {
+            "name": "wit-mbedtls-sha1.patch",
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0"
+          }
+        ],
+        "sourceAssets": [
+          "EngineSources-linux-arm64.tar.gz"
+        ],
+        "dolphin": {
+          "version": "2506",
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502"
+        }
+      }
+    },
+    {
+      "rid": "osx-x64",
+      "package": "RVZConverter-osx-x64.zip",
+      "sha256": "058439bc8ddd23063939bb423a7cff4d2dd07ba99dce369638d519925cf8b89e",
+      "source_sha256": "39ec26461c7aa508816da3ce80c8038bb9e604058b077b6099eeb145f93df03a",
+      "entries": 367,
+      "native_architecture": "0x1000007",
+      "wit_available": true,
+      "complete": true,
+      "manifest": {
+        "patches": [
+          {
+            "name": "dolphin-no-debug-paths.patch",
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10"
+          },
+          {
+            "name": "wit-gcz-subtype.patch",
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882"
+          },
+          {
+            "name": "wit-mbedtls-sha1.patch",
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0"
+          }
+        ],
+        "wit": {
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58",
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "version": "3.05a+rvz1",
+          "available": true
+        },
+        "sourceAssets": [
+          "EngineSources-osx-x64.tar.gz"
+        ],
+        "dolphin": {
+          "version": "2506",
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502"
+        },
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "runtime": "osx-x64"
+      }
+    },
+    {
+      "rid": "osx-arm64",
+      "package": "RVZConverter-osx-arm64.zip",
+      "sha256": "c406f6e0b82b6b9daca4cd917c59b9ff40fefb6ad58e377cb36b988489497224",
+      "source_sha256": "2d240e1988c6469d445a82675f94da6baae258d8ebd279ec819782029cfca883",
+      "entries": 367,
+      "native_architecture": "0x100000c",
+      "wit_available": true,
+      "complete": true,
+      "manifest": {
+        "wit": {
+          "revision": "fc1c0b840cb3ac41ca6e4f1d5e16da12b47eab58",
+          "available": true,
+          "sha1Provider": "Mbed TLS 2.28.0 (Apache-2.0), vendored by the pinned Dolphin revision",
+          "version": "3.05a+rvz1"
+        },
+        "sourceAssets": [
+          "EngineSources-osx-arm64.tar.gz"
+        ],
+        "dolphin": {
+          "revision": "aed420c95d7a152363917e4b827d6cc85eacb502",
+          "version": "2506"
+        },
+        "redistribution": "Separate processes. Engine GPL licenses do not assign the application a license.",
+        "patches": [
+          {
+            "sha256": "66d5e4853d216476433c71dcf7a597c2bb501bbb6ee9b42d7edc926c088cfc10",
+            "name": "dolphin-no-debug-paths.patch"
+          },
+          {
+            "sha256": "4d7dac85298e24d3cf7a9db4d2fef5bd86b5e3dd6c0dfabd51b89ea7ebd98882",
+            "name": "wit-gcz-subtype.patch"
+          },
+          {
+            "sha256": "fd4d74b34ad5f93872498e02ed2ab118eb7b558f64a876b9eb410b4b955b76b0",
+            "name": "wit-mbedtls-sha1.patch"
+          }
+        ],
+        "runtime": "osx-arm64"
+      }
+    }
+  ],
+  "published_archives": {
+    "EngineSources-linux-arm64.tar.gz": "519124cf3e2615db9518e79ea512f6a543195b4f107be5d88ad67946dcdaa31e",
+    "EngineSources-linux-x64.tar.gz": "7886c2af17e8793cfbd04191fc71c18d4f67316bff343b431faf969b9df17801",
+    "EngineSources-osx-arm64.tar.gz": "2d240e1988c6469d445a82675f94da6baae258d8ebd279ec819782029cfca883",
+    "EngineSources-osx-x64.tar.gz": "39ec26461c7aa508816da3ce80c8038bb9e604058b077b6099eeb145f93df03a",
+    "EngineSources-win-x64.tar.gz": "efc1300a383f4b07b2dfd86ee31b142b7c2f19b6b010675bfe2ff43e52a7f4af",
+    "RVZConverter-linux-arm64.tar.gz": "fd80ddd9086e28e067d1b84416e6f6b5a914fce9eb5f8860e0ccfd088360074f",
+    "RVZConverter-linux-x64.tar.gz": "5dde101f5e5863f4bed2863e20e6de28345dcc5ae1e34cde8716b2cceef71e39",
+    "RVZConverter-osx-arm64.zip": "c406f6e0b82b6b9daca4cd917c59b9ff40fefb6ad58e377cb36b988489497224",
+    "RVZConverter-osx-x64.zip": "058439bc8ddd23063939bb423a7cff4d2dd07ba99dce369638d519925cf8b89e",
+    "RVZConverter-win-x64.zip": "c18b32dc450539f7b7f9ecacd32f7d593f2c751a3201fbfb34654c0d758c0226"
+  },
+  "real_image_host": "Windows x64",
+  "real_image_suites": [
+    "original published Windows x64 archive",
+    "run 40076853202 Windows x64 archive"
+  ],
+  "sources": [
+    {
+      "platform": "Wii",
+      "game_id": "R8PP01",
+      "bytes": 4699979776,
+      "sha256": "45826a280c04edc6fd34a5ce6199dd283bf564e915738f0d3df9bf21a130491f",
+      "source_unchanged": true,
+      "iso_rvz_iso_identical": true
+    },
+    {
+      "platform": "GameCube",
+      "game_id": "GZ2P01",
+      "bytes": 1459978240,
+      "sha256": "ab8a811eb484ab5db065d69dde4a343bbebd897c5d74ad447632aff4722cc652",
+      "source_unchanged": true,
+      "iso_rvz_iso_identical": true
+    }
+  ],
+  "official_package_conversions": [
+    {
+      "route": "Wii ISO to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 344397416,
+          "sha256": "DABCDD595509BB1C814E4B5803A5E4E63F013AF2C6706F1756436415F33EE3E2"
+        }
+      ]
+    },
+    {
+      "route": "Wii RVZ to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "45826A280C04EDC6FD34A5CE6199DD283BF564E915738F0D3DF9BF21A130491F"
+        }
+      ]
+    },
+    {
+      "route": "Wii ISO to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 520126464,
+          "sha256": "C1D0883638F19CCDDE351BD37C7F757D77CB07A7D422034B9E605E97FB332D3A"
+        }
+      ]
+    },
+    {
+      "route": "Wii ISO to WBFS",
+      "format": "WBFS",
+      "outputs": [
+        {
+          "size": 522190848,
+          "sha256": "E74B589522562DEBAC1107D663FA2CC119CC8B6A2B53531DA62E561A7D3BB057"
+        }
+      ]
+    },
+    {
+      "route": "Wii CISO to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "8E4B82D3DFB47CD4ACCCFED2C647F5CBB088173184A5660179631B7EFE54CCC9"
+        }
+      ]
+    },
+    {
+      "route": "Wii CISO to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 333850892,
+          "sha256": "A4B5992393377F623011D0D34D4AB50494EB27917089B34C5CB57945FC0C2BC3"
+        }
+      ]
+    },
+    {
+      "route": "Wii WBFS to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "8E4B82D3DFB47CD4ACCCFED2C647F5CBB088173184A5660179631B7EFE54CCC9"
+        }
+      ]
+    },
+    {
+      "route": "Wii WBFS to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 333850892,
+          "sha256": "A4B5992393377F623011D0D34D4AB50494EB27917089B34C5CB57945FC0C2BC3"
+        }
+      ]
+    },
+    {
+      "route": "GameCube ISO to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 946507908,
+          "sha256": "F9215C4CDD8268265B091CBAF561FAA5DA9196EE581AC0454739C13585A1321E"
+        }
+      ]
+    },
+    {
+      "route": "GameCube RVZ to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 1459978240,
+          "sha256": "AB8A811EB484AB5DB065D69DDE4A343BBEBD897C5D74AD447632AFF4722CC652"
+        }
+      ]
+    },
+    {
+      "route": "GameCube ISO to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 1054900224,
+          "sha256": "2267BF86D156CBD35EA08F3899E083654AD6A65C696791B73D4B1F4D32907B77"
+        }
+      ]
+    },
+    {
+      "route": "Wii RVZ to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 520126464,
+          "sha256": "C1D0883638F19CCDDE351BD37C7F757D77CB07A7D422034B9E605E97FB332D3A"
+        }
+      ]
+    },
+    {
+      "route": "Wii RVZ to WBFS",
+      "format": "WBFS",
+      "outputs": [
+        {
+          "size": 522190848,
+          "sha256": "E74B589522562DEBAC1107D663FA2CC119CC8B6A2B53531DA62E561A7D3BB057"
+        }
+      ]
+    },
+    {
+      "route": "Wii GCZ to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "45826A280C04EDC6FD34A5CE6199DD283BF564E915738F0D3DF9BF21A130491F"
+        }
+      ]
+    },
+    {
+      "route": "Wii GCZ to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 344397416,
+          "sha256": "DABCDD595509BB1C814E4B5803A5E4E63F013AF2C6706F1756436415F33EE3E2"
+        }
+      ]
+    },
+    {
+      "route": "Wii GCZ to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 520126464,
+          "sha256": "C1D0883638F19CCDDE351BD37C7F757D77CB07A7D422034B9E605E97FB332D3A"
+        }
+      ]
+    },
+    {
+      "route": "Wii GCZ to WBFS",
+      "format": "WBFS",
+      "outputs": [
+        {
+          "size": 522190848,
+          "sha256": "E74B589522562DEBAC1107D663FA2CC119CC8B6A2B53531DA62E561A7D3BB057"
+        }
+      ]
+    },
+    {
+      "route": "Wii WIA to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "45826A280C04EDC6FD34A5CE6199DD283BF564E915738F0D3DF9BF21A130491F"
+        }
+      ]
+    },
+    {
+      "route": "Wii WIA to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 344397416,
+          "sha256": "DABCDD595509BB1C814E4B5803A5E4E63F013AF2C6706F1756436415F33EE3E2"
+        }
+      ]
+    },
+    {
+      "route": "Wii WIA to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 520126464,
+          "sha256": "C1D0883638F19CCDDE351BD37C7F757D77CB07A7D422034B9E605E97FB332D3A"
+        }
+      ]
+    },
+    {
+      "route": "Wii WIA to WBFS",
+      "format": "WBFS",
+      "outputs": [
+        {
+          "size": 522190848,
+          "sha256": "E74B589522562DEBAC1107D663FA2CC119CC8B6A2B53531DA62E561A7D3BB057"
+        }
+      ]
+    },
+    {
+      "route": "Wii CISO to WBFS",
+      "format": "WBFS",
+      "outputs": [
+        {
+          "size": 522190848,
+          "sha256": "E74B589522562DEBAC1107D663FA2CC119CC8B6A2B53531DA62E561A7D3BB057"
+        }
+      ]
+    },
+    {
+      "route": "Wii WBFS to CISO",
+      "format": "CISO",
+      "outputs": [
+        {
+          "size": 520126464,
+          "sha256": "C1D0883638F19CCDDE351BD37C7F757D77CB07A7D422034B9E605E97FB332D3A"
+        }
+      ]
+    },
+    {
+      "route": "GameCube CISO to ISO",
+      "format": "ISO",
+      "outputs": [
+        {
+          "size": 4699979776,
+          "sha256": "15814757CCE5F8AD5053830F18D1225643386890AB298A9EDA9E0E021C7E19A0"
+        }
+      ]
+    },
+    {
+      "route": "GameCube CISO to RVZ",
+      "format": "RVZ",
+      "outputs": [
+        {
+          "size": 945772652,
+          "sha256": "5E7D9B77CFDBCB9DE3C4D4BCAB6AD5062EF61DB5569BA32CBA317B6BFEE27B2A"
+        }
+      ]
+    }
+  ],
+  "official_package_wii_verifications": [
+    {
+      "route": "Wii CISO to ISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii CISO to RVZ",
+      "exit_code": 0,
+      "diagnostics": [
+        "CRC32: 3ff48947",
+        "SHA1: e4d29b34dba3ff58ae644269cb266e6cfe882d37",
+        "Problems Found: Yes",
+        "Severity: Low",
+        "Summary: Errors were found in 121609 unused blocks in the DATA partition."
+      ],
+      "warning": true
+    },
+    {
+      "route": "Wii CISO to WBFS",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii GCZ to CISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii GCZ to ISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii GCZ to RVZ",
+      "exit_code": 0,
+      "diagnostics": [
+        "CRC32: ad00ca01",
+        "SHA1: f86ce80049aa35f11d1fdf498d60087dc3806ac2",
+        "Problems Found: No"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii GCZ to WBFS",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii ISO to CISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii ISO to RVZ",
+      "exit_code": 0,
+      "diagnostics": [
+        "CRC32: ad00ca01",
+        "SHA1: f86ce80049aa35f11d1fdf498d60087dc3806ac2",
+        "Problems Found: No"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii ISO to WBFS",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii RVZ to CISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii RVZ to ISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii RVZ to WBFS",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WBFS to CISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WBFS to ISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WBFS to RVZ",
+      "exit_code": 0,
+      "diagnostics": [
+        "CRC32: 3ff48947",
+        "SHA1: e4d29b34dba3ff58ae644269cb266e6cfe882d37",
+        "Problems Found: Yes",
+        "Severity: Low",
+        "Summary: Errors were found in 121609 unused blocks in the DATA partition."
+      ],
+      "warning": true
+    },
+    {
+      "route": "Wii WIA to CISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WIA to ISO",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WIA to RVZ",
+      "exit_code": 0,
+      "diagnostics": [
+        "CRC32: ad00ca01",
+        "SHA1: f86ce80049aa35f11d1fdf498d60087dc3806ac2",
+        "Problems Found: No"
+      ],
+      "warning": false
+    },
+    {
+      "route": "Wii WIA to WBFS",
+      "exit_code": 0,
+      "diagnostics": [
+        "+OK     .0  UPDATE  R8PP01 [local image path omitted]",
+        "+OK     .1  DATA    R8PP01 [local image path omitted]"
+      ],
+      "warning": false
+    }
+  ],
+  "not_tested": [
+    "Real games on Windows ARM64, Linux or macOS",
+    "All Wii/GameCube games",
+    "Large split WBFS outputs",
+    "Clean OS without any development tools installed",
+    "macOS 14 native runtime",
+    "Gatekeeper notarization or publisher trust",
+    "Gameplay or emulator boot"
+  ]
+}
