@@ -1,4 +1,4 @@
-param([string]$AssetDirectory = 'artifacts/release', [ValidateSet('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')][string[]]$RuntimeIdentifier = @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64'))
+param([string]$AssetDirectory = 'artifacts/release', [ValidateSet('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64')][string[]]$RuntimeIdentifier = @('win-x64','win-arm64','linux-x64','linux-arm64','osx-x64','osx-arm64'), [switch]$AllowIncompleteEngines)
 . (Join-Path $PSScriptRoot 'common.ps1')
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $directory = if ([IO.Path]::IsPathRooted($AssetDirectory)) { $AssetDirectory } else { Join-Path $ProjectRoot $AssetDirectory }
@@ -25,7 +25,11 @@ foreach ($rid in $RuntimeIdentifier) {
             $entry = $zip.Entries | Where-Object FullName -eq ($prefix + 'tools/engines.json')
             $reader = [IO.StreamReader]::new($entry.Open()); try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
             if ($manifest.runtime -ne $rid) { throw "Engine target mismatch: $rid" }
-            if ($manifest.wit.available -ne ($rid -ne 'win-arm64')) { throw "Unexpected WIT availability: $rid" }
+            if (-not $manifest.wit.available -and (-not $AllowIncompleteEngines -or $rid -ne 'win-arm64')) { throw "Incomplete engine package: $rid has no native WIT. Do not publish it as a complete distribution. Use -AllowIncompleteEngines only to audit experimental CI artifacts." }
+            if ($manifest.wit.available) {
+                $witExecutable = if ($rid.StartsWith('win-')) { 'wit.exe' } else { 'wit' }
+                if ($names -notcontains ($prefix + 'tools/wit/' + $witExecutable)) { throw "Bundled WIT executable missing: $rid" }
+            }
             if ($manifest.wit.available -and $manifest.wit.sha1Provider -notlike 'Mbed TLS 2.28.0*') { throw "Stale WIT provider: $rid" }
         } finally { $zip.Dispose() }
     } else {
