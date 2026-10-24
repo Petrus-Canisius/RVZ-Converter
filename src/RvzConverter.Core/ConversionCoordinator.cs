@@ -75,7 +75,7 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
                 else
                 {
                     log?.Invoke(step.Format == OutputFormat.ISO
-                        ? "WIT COPY to ISO uses raw selection. Missing/scrubbed source data cannot be restored."
+                        ? "WIT COPY to ISO uses raw selection and may pad the virtual disc length with zeros. Missing/scrubbed source data cannot be restored."
                         : "WIT COPY retains all partitions but scrubs unused blocks; automatic encoding may rebuild encryption and hashes. CISO/WBFS are not promised byte-identical to the source.");
                     var reader = new WitProgressReader();
                     await Run(options.WitPath, ConversionPlanner.WitArguments(Path.GetFileName(current), Path.GetFileName(next), step.Format, options.SplitWbfs), task, "WIT", token, line =>
@@ -155,7 +155,7 @@ public sealed class ConversionCoordinator(IProcessRunner runner, IVolumeProbe vo
         if (!File.Exists(path)) throw new ConversionException("The engine did not create the expected ISO.");
         long length = new FileInfo(path).Length;
         if (expected.ExactSize ? length != expected.IsoSize : length < 0x50000 || length > expected.IsoSize)
-            throw new ConversionException("The output ISO size is outside the source container's declared size/bound.");
+            throw new ConversionException($"The output ISO size ({length} bytes) is outside the source container's declared size/bound ({expected.IsoSize} bytes, {(expected.ExactSize ? "exact" : "upper bound")}).");
         var actual = ImageInspector.Read(path);
         if (actual.Format != ImageFormat.ISO || actual.Disc.Platform != expected.Platform || actual.Disc.GameId != expected.GameId)
             throw new ConversionException("The output ISO signature or disc identifier is inconsistent with the source.");

@@ -35,13 +35,16 @@ public static class PackageVerification
             using (var image = File.OpenWrite(iso)) { image.Position = 0x10000; image.Write(filler); }
             byte[] hash = Hash(iso);
             string assertionCiso = Path.Combine(root, "Structurally complete synthetic assertion fixture.ciso");
-            byte[] cisoHeader = new byte[32768]; "CISO"u8.CopyTo(cisoHeader); BinaryPrimitives.WriteUInt32LittleEndian(cisoHeader.AsSpan(4), 32768);
-            byte[] isoBytes = File.ReadAllBytes(iso); int blocks = isoBytes.Length / 32768; Array.Fill(cisoHeader, (byte)1, 8, blocks);
+            // WIT's CISO reader materializes at least a single-layer Wii length,
+            // even for GameCube. The map must represent that padded length.
+            const int cisoBlockSize = 262144;
+            byte[] cisoHeader = new byte[32768]; "CISO"u8.CopyTo(cisoHeader); BinaryPrimitives.WriteUInt32LittleEndian(cisoHeader.AsSpan(4), cisoBlockSize);
+            byte[] isoBytes = File.ReadAllBytes(iso); int blocks = isoBytes.Length / cisoBlockSize; Array.Fill(cisoHeader, (byte)1, 8, blocks);
             using (var cisoFile = File.Create(assertionCiso)) { cisoFile.Write(cisoHeader); cisoFile.Write(isoBytes); }
             Require(ImageInspector.Read(assertionCiso).Format == ImageFormat.CISO, "Synthetic assertion fixture detection failed.");
             Require(await new EngineService(runner).DolphinCanRead(engines.DolphinPath, assertionCiso, "GTEST1", lines.Add, default), "DolphinTool cannot inspect the synthetic CISO fixture.");
             byte[] assertionHash = Hash(assertionCiso);
-            lines.Add("Synthetic CISO SHA256 before diagnostic: " + Convert.ToHexString(assertionHash));
+            lines.Add("Synthetic CISO SHA256 before diagnostic: " + System.Convert.ToHexString(assertionHash));
             if (expectWit)
             {
                 var inspected = await runner.RunAsync(new(engines.WitPath, ["DUMP", Path.GetFileName(assertionCiso)], root, "Independent WIT CISO inspection"), lines.Add, default);
@@ -61,7 +64,7 @@ public static class PackageVerification
             }
             Require(assertionReported, "Dolphin's inaccurate-size rejection was not reproduced and captured.");
             Require(Hash(assertionCiso).SequenceEqual(assertionHash), "Assertion regression changed its CISO source.");
-            lines.Add("Synthetic CISO SHA256 after diagnostic: " + Convert.ToHexString(Hash(assertionCiso)));
+            lines.Add("Synthetic CISO SHA256 after diagnostic: " + System.Convert.ToHexString(Hash(assertionCiso)));
             lines.Add("PASS actual inaccurate-size assertion captured. Engine stopped and awaited. Source unchanged. Diagnostic output discarded.");
             string rvz = await Convert(iso, OutputFormat.RVZ);
             string roundtrip = await Convert(rvz, OutputFormat.ISO);
