@@ -4,6 +4,7 @@ source_dir=$1
 destination=$2
 cd "$source_dir"
 if [[ $(uname -s) == Darwin ]]; then
+  export MACOSX_DEPLOYMENT_TARGET=14.0
   mkdir -p .build-tools
   ln -sf "$(command -v gawk)" .build-tools/awk
   export PATH="$PWD/.build-tools:$PATH"
