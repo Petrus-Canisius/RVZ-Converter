@@ -2,7 +2,7 @@
 
 Audit: 24 October 2026. Release commit: `cb5809e84f4df1965db0d9c0bad9f935a66343b1`.
 
-**Five distributions meet the complete-engine requirement. Windows ARM64 does not: native WIT is missing and that artifact is withheld. The requested six-complete-distribution objective is not achieved.** Four new application/source pairs match the exact v2.0.2 commit and can be added to this release. Windows x64 retains its original published bytes. No existing tag or previous release is changed.
+**Five distributions meet the complete-engine requirement. Windows ARM64 does not: native WIT is missing and that artifact is withheld. The requested six-complete-distribution objective is not achieved.** Four new application/source pairs were published on v2.0.2 and match its exact commit. Windows x64 retains its original published bytes. No existing tag or previous release is changed.
 
 ## Native evidence
 
@@ -50,7 +50,7 @@ References: [Apache GPL compatibility guidance](https://apache.org/licenses/GPL-
 
 ## Release gate and publication
 
-`eng/verify-packages.ps1` now rejects missing native WIT by default. `-AllowIncompleteEngines` permits inspection of the experimental ARM64 artifact; it does not authorize publication as complete. Negative validation fails on Windows ARM64 as intended. Selecting five complete targets passes. The correction is commit `90693a7b9a7501195267eaf215c432bee84a97f8`; six native jobs restarted in [run 40082658249](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40082658249). Its final conclusion remains to be recorded.
+`eng/verify-packages.ps1` now rejects missing native WIT by default. `-AllowIncompleteEngines` permits inspection of the experimental ARM64 artifact; it does not authorize publication as complete. Negative validation fails on Windows ARM64 as intended. Selecting five complete targets passes. The correction is commit `90693a7b9a7501195267eaf215c432bee84a97f8`; [run 40082658249](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40082658249) finished **6/6 successful**. The documentation update at `2a7b598a293441a7f96881721177d27de2bd0e20` also finished **6/6 successful** in [run 40083225768, attempt 2](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40083225768/attempts/2), reusing the verified engine caches. Attempt 1 of the latter run was deliberately cancelled to avoid duplicate engine rebuilding; no validation result is inferred from that cancelled attempt. Final audit-record updates only record these completed results and do not change application, engine, packaging or test code.
 
 Application hashes selected for distribution:
 
@@ -62,14 +62,14 @@ Application hashes selected for distribution:
 | RVZConverter-osx-x64.zip | `058439bc8ddd23063939bb423a7cff4d2dd07ba99dce369638d519925cf8b89e` |
 | RVZConverter-osx-arm64.zip | `c406f6e0b82b6b9daca4cd917c59b9ff40fefb6ad58e377cb36b988489497224` |
 
-The separately tested Windows x64 CI rebuild has archive hash `389d99cd2e40f03e7f74311e9a006ce8472c1be1dac4f6d49998eb4e0dd89208`. It does not replace the original published asset. Source hashes and post-download checks are covered by `SHA256SUMS.txt` and the evidence record. New release guards and online documentation are later maintenance commits, not the provenance of the immutable 2.0.2 packages. Packages were not repacked with later documentation.
+The separately tested Windows x64 CI rebuild has archive hash `389d99cd2e40f03e7f74311e9a006ce8472c1be1dac4f6d49998eb4e0dd89208`. It does not replace the original published asset. All ten application/source archives were downloaded again from the official release. Each matched the regenerated `SHA256SUMS.txt`, the audited local bytes and GitHub's release asset digest. The downloaded five-package set passed the release layout, manifest, required-notice and corresponding-source checks again. Source hashes and post-download results are in the evidence record. New release guards and online documentation are later maintenance commits, not the provenance of the immutable 2.0.2 packages. Packages were not repacked with later documentation.
 
 ## Not tested and remaining blocker
 
 - Native WIT on Windows ARM64: **unavailable, package withheld**. Completion requires a native WIT port and native tests. Emulated x64 engines would not meet this requirement.
 - Real games on Linux/macOS/Windows ARM64; every Wii/GameCube title.
 - Large split WBFS output on actual FAT32 media. Split argument/collision/missing-part tests do not replace this.
-- Clean-OS installation without any development environment installed. PATH isolation, relocation and read-only package checks are the available evidence.
+- Clean-OS installation without any development environment installed. PATH isolation, relocation and read-only package checks are the available evidence. The local Docker API was unavailable, so no clean-container result is inferred.
 - macOS 14 runtime, downloaded-app Gatekeeper acceptance, notarization and trusted publisher signing.
 - Gameplay/emulator boot, long-running real-game cancellation and hardware display scaling on every target.
 

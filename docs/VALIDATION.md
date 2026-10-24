@@ -4,6 +4,8 @@
 
 The [final 2.0.2 report](FINAL-VALIDATION-2.0.2.md) supersedes the pending-publication statements below. Run [40076853202](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40076853202) passed all six native jobs at the unchanged release commit `cb5809e84f4df1965db0d9c0bad9f935a66343b1`. Five targets have both engines. Windows ARM64 has no native WIT and remains withheld. Real Wii and GameCube image tests were subsequently executed locally on Windows x64. The historical records below describe the earlier evidence available when written.
 
+The release-gate correction passed all six native jobs in [40082658249](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40082658249). The documentation update passed all six again in [40083225768, attempt 2](https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40083225768/attempts/2). Its first attempt was cancelled to avoid redundant engine builds and is not counted as a validation. Four application/source pairs were added to v2.0.2; the original Windows x64 pair was preserved. All ten public archive downloads match the regenerated SHA-256 index, audited bytes and GitHub asset digests. Windows x64 testing includes all twenty Wii routes on one image and five GameCube routes; two RVZ outputs after CISO/WBFS report low-severity unused-block warnings, which remain in the final report and evidence JSON.
+
 ## Application version 2.0.2
 
 The local Windows x64 build used .NET SDK 10.0.402 and MSVC 19.51.36260.0. The application build completed with no warnings or errors. The regression suite passed 81 tests. The engine build emitted upstream compiler and CMake warnings. These were not hidden.

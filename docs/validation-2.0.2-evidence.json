@@ -736,5 +736,148 @@
     "macOS 14 native runtime",
     "Gatekeeper notarization or publisher trust",
     "Gameplay or emulator boot"
-  ]
+  ],
+  "actions_artifacts": [
+    {
+      "id": 12555150679,
+      "name": "osx-x64-unsigned",
+      "digest": "sha256:66aa3136c9f64331f389a1e8a4faed2dbf4af2c69ee758ee8eeb04c869192c46",
+      "size_in_bytes": 114170895
+    },
+    {
+      "id": 12554985373,
+      "name": "win-arm64-unsigned",
+      "digest": "sha256:f17eb0bf94160d9f70635141ef6cea8b9c7b9e272516674846857be1f306f4fd",
+      "size_in_bytes": 106719575
+    },
+    {
+      "id": 12554815607,
+      "name": "osx-arm64-unsigned",
+      "digest": "sha256:c09fd3391fe0a6444e9f5a398ba468a60d73b27f33063e07a1647f21bb909a4c",
+      "size_in_bytes": 111207659
+    },
+    {
+      "id": 12554630702,
+      "name": "linux-x64-unsigned",
+      "digest": "sha256:100eea0690d2fb79fd0ef20c8f8e7cec42dd9194e337b4eca29773647f49204e",
+      "size_in_bytes": 115144005
+    },
+    {
+      "id": 12554182334,
+      "name": "win-x64-unsigned",
+      "digest": "sha256:2f467063d5c91609fbba29155a3e5d109f09461d9264764a80ff53908a069aef",
+      "size_in_bytes": 157347531
+    },
+    {
+      "id": 12554041913,
+      "name": "linux-arm64-unsigned",
+      "digest": "sha256:2eeb282c56bcdf668b730479cb4ce0d5f2f86571cf53f40745468ffc8279b31f",
+      "size_in_bytes": 111812538
+    }
+  ],
+  "post_download_verification": {
+    "release": "v2.0.2",
+    "checksums": {
+      "EngineSources-linux-arm64.tar.gz": "519124cf3e2615db9518e79ea512f6a543195b4f107be5d88ad67946dcdaa31e",
+      "EngineSources-linux-x64.tar.gz": "7886c2af17e8793cfbd04191fc71c18d4f67316bff343b431faf969b9df17801",
+      "EngineSources-osx-arm64.tar.gz": "2d240e1988c6469d445a82675f94da6baae258d8ebd279ec819782029cfca883",
+      "EngineSources-osx-x64.tar.gz": "39ec26461c7aa508816da3ce80c8038bb9e604058b077b6099eeb145f93df03a",
+      "EngineSources-win-x64.tar.gz": "efc1300a383f4b07b2dfd86ee31b142b7c2f19b6b010675bfe2ff43e52a7f4af",
+      "RVZConverter-linux-arm64.tar.gz": "fd80ddd9086e28e067d1b84416e6f6b5a914fce9eb5f8860e0ccfd088360074f",
+      "RVZConverter-linux-x64.tar.gz": "5dde101f5e5863f4bed2863e20e6de28345dcc5ae1e34cde8716b2cceef71e39",
+      "RVZConverter-osx-arm64.zip": "c406f6e0b82b6b9daca4cd917c59b9ff40fefb6ad58e377cb36b988489497224",
+      "RVZConverter-osx-x64.zip": "058439bc8ddd23063939bb423a7cff4d2dd07ba99dce369638d519925cf8b89e",
+      "RVZConverter-win-x64.zip": "c18b32dc450539f7b7f9ecacd32f7d593f2c751a3201fbfb34654c0d758c0226"
+    },
+    "all_passed": true,
+    "release_asset_digests_match": true,
+    "archive_layout_and_sources_passed": true
+  },
+  "clean_environment_attempt": "Local Docker API unavailable; no clean-OS test result inferred",
+  "revalidations": [
+    {
+      "id": 40082658249,
+      "head_sha": "90693a7b9a7501195267eaf215c432bee84a97f8",
+      "run_attempt": 1,
+      "conclusion": "success",
+      "html_url": "https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40082658249",
+      "jobs": [
+        {
+          "id": 120839218068,
+          "name": "native (macos-15-intel, osx-x64, X64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120839218222,
+          "name": "native (windows-11-arm, win-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120839218259,
+          "name": "native (macos-15, osx-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120839218290,
+          "name": "native (ubuntu-24.04-arm, linux-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120839218296,
+          "name": "native (ubuntu-24.04, linux-x64, X64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120839218332,
+          "name": "native (windows-latest, win-x64, X64)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 40083225768,
+      "head_sha": "2a7b598a293441a7f96881721177d27de2bd0e20",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "html_url": "https://github.com/Petrus-Canisius/RVZ-Converter/actions/runs/40083225768",
+      "jobs": [
+        {
+          "id": 120843711635,
+          "name": "native (windows-latest, win-x64, X64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120843711689,
+          "name": "native (ubuntu-24.04-arm, linux-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120843711728,
+          "name": "native (macos-15-intel, osx-x64, X64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120843711746,
+          "name": "native (macos-15, osx-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120843711752,
+          "name": "native (windows-11-arm, win-arm64, Arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 120843711788,
+          "name": "native (ubuntu-24.04, linux-x64, X64)",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "cancelled_attempt": {
+    "run": 40083225768,
+    "attempt": 1,
+    "conclusion": "cancelled",
+    "reason": "Duplicate engine rebuild cancelled; attempt 2 reran all six jobs using caches from successful guard run. No completed validation result inferred from cancelled attempt."
+  }
 }
